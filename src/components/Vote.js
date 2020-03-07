@@ -13,10 +13,11 @@ class Vote extends React.Component {
         };
         this.setOpen = this.setOpen.bind(this);
         this.onChoiceChange = this.onChoiceChange.bind(this);
+        this.onVoteSubmit = this.onVoteSubmit.bind(this);
     }
 
     shouldComponentUpdate(newProps, newState){
-        if(newProps.data === this.props.data)
+        if(newProps.data === this.props.data && newState === this.state)
             return false;
         else
             return true;
@@ -34,6 +35,12 @@ class Vote extends React.Component {
         });
     }
 
+    onVoteSubmit(e){
+        e.preventDefault();
+        let choice = e.currentTarget.choice.value;
+        this.props.onVoteSubmit(this.props.data.sid, choice);
+    }
+
     render() {
         let _contents = null;
         let _progressBar = null;
@@ -42,9 +49,9 @@ class Vote extends React.Component {
             let _data = {
                 datasets:[{
                     backgroundColor: BackgroundColorPreset,
-                    data: [35,20,45]
+                    data: [35,20,45]    /* need to be updated */
                 }],
-                labels:['Choice1', 'Choice2', 'Choice3']
+                labels:['Choice1', 'Choice2', 'Choice3'] /* need to be updated */
             }
             _contents = <Doughnut data={_data} />;
             
@@ -54,20 +61,23 @@ class Vote extends React.Component {
                     <ProgressBar striped variant="danger" now={45} key={3} />
                     </ProgressBar>
         }else{
-            _contents = <Form>
+            let _choices = [];
+            let _choiceList = this.props.data.contents.split('|')
+            for(let i=0;i<_choiceList.length;i++){
+                _choices.push(
+                    <Form.Check 
+                        key={(i+1)}
+                        label={_choiceList[i]} 
+                        type='radio' 
+                        id={'vote-'+this.props.data.sid+'-radio-1'} 
+                        name="choice" value={(i+1)}
+                        onChange={this.onChoiceChange}
+                        checked={this.state.choice === (i+1)}/>
+                )
+            }
+            _contents = <Form onSubmit={this.onVoteSubmit}>
                 <Form.Group>
-                <Form.Check label="선택지 1" type='radio' id={'vote-'+this.props.sid+'-radio-1'} 
-                        name="choice" value="1"
-                        onChange={this.onChoiceChange}
-                        checked={this.state.choice === 1}/>
-                <Form.Check label="선택지 2" type='radio' id={'vote-'+this.props.sid+'-radio-2'} 
-                        name="choice" value="2"
-                        onChange={this.onChoiceChange}
-                        checked={this.state.choice === 2}/>
-                <Form.Check label="선택지 3" type='radio' id={'vote-'+this.props.sid+'-radio-3'} 
-                        name="choice" value="3"
-                        onChange={this.onChoiceChange}
-                        checked={this.state.choice === 3}/>
+                {_choices}
                 </Form.Group>
                 <Button variant="success" type="submit">Submit!</Button>
                 </Form>;

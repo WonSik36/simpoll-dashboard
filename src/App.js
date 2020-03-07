@@ -36,7 +36,7 @@ class App extends React.Component {
         }
 
         this.search = this.search.bind(this);
-        this.onRoomClick = this.onRoomClick.bind(this);
+        this.updateVoteList = this.updateVoteList.bind(this);
         this.getVoteResult = this.getVoteResult.bind(this);
         this.onVoteSubmit = this.onVoteSubmit.bind(this);
     }
@@ -65,6 +65,7 @@ class App extends React.Component {
                         items: json
                     }
                 });
+                updateVoteList(json[0].sid);
             }.bind(this));
     }
 
@@ -105,14 +106,32 @@ class App extends React.Component {
             }.bind(this));
     }
 
-    onRoomClick(sid){
+    // update vote list
+    updateVoteList(sid){
         alert(sid);
+        // fetch(url+searchWord)
+        //     .then((res)=>{
+        //         return res.json();
+        //     }).then(function(json){
+                    /* user was not voted*/
+        //         this.setState({
+        //             searchResult:{
+        //                 isLoading: false,
+        //                 item: json
+        //             }
+        //         });
+                    /* user was voted */
+                    // this.getVoteResult()
+        //     }.bind(this));
     }
 
+    // get vote result
+    // this will be called vote in vote list was voted by user
     getVoteResult(sid){
 
     }
 
+    // this will be called when vote is submitted
     onVoteSubmit(e){
 
     }
@@ -132,9 +151,8 @@ class App extends React.Component {
                 <Row className="m-2">
                     <Main 
                         room-list-data={this.state.roomList} 
-                        onRoomClick={this.onRoomClick}
+                        onRoomClick={this.updateVoteList}
                         vote-list-data={this.state.voteList} 
-                        getVoteResult={this.getVoteResult}
                         onVoteSubmit={this.onVoteSubmit}
                     />
                 </Row>

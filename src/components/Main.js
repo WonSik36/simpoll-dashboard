@@ -21,7 +21,6 @@ class Main extends React.Component {
                         <h3>Simpoll</h3>
                         <VoteList 
                             data={this.props['vote-list-data']} 
-                            getVoteResult={this.props['getVoteResult']}
                             onVoteSubmit={this.props['onVoteSubmit']}/>
                     </Col>
                 </Row>

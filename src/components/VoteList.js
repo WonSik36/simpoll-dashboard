@@ -9,9 +9,10 @@ class VoteList extends React.Component {
         if(this.props.data.isLoading){
             _contents = <Spinner animation="border" variant="primary"/>;
         }else{
-            for(let i=0;i<this.props.data.items.length;i++){
+            let _voteList = this.props.data.items;
+            for(let i=0;i<_voteList.length;i++){
                 _contents.push(
-                    <Vote/>
+                    <Vote data={_voteList[i]} key={(i+1)} onVoteSubmit={this.onVoteSubmit}/>
                 ) 
             }
         }

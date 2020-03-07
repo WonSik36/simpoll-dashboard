@@ -13,6 +13,13 @@ class SearchBox extends React.Component {
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
     }
 
+    shouldComponentUpdate(newProps, newState){
+        if(newProps.data === this.props.data && newState === this.state)
+            return false;
+        else
+            return true;
+    }
+
     onSearchTypeChange(e){
         this.setState({
             searchType : e.target.value,
@@ -43,7 +50,7 @@ class SearchBox extends React.Component {
             <Card>
                 <Card.Header>검색</Card.Header>
                 <Card.Body>
-                    <Form action="/search.json" mehod="get" onSubmit={this.onSearchSubmit}>
+                    <Form onSubmit={this.onSearchSubmit}>
                         <Form.Control required type="text" placeholder={this.state.placeholder} name="search-word"/>
                         <Form.Group>
                             <Form.Check inline label="Room" type='radio' id='radio-1' 
