@@ -28,10 +28,17 @@ class App extends React.Component {
             voteList: {
                 isLoading: false,
                 items: []
+            },
+            alertList: {
+                isLoading: false,
+                items: []
             }
         }
 
         this.search = this.search.bind(this);
+        this.onRoomClick = this.onRoomClick.bind(this);
+        this.getVoteResult = this.getVoteResult.bind(this);
+        this.onVoteSubmit = this.onVoteSubmit.bind(this);
     }
 
     componentDidMount(){
@@ -48,7 +55,7 @@ class App extends React.Component {
         // get room list from server
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
         this.setState({roomList:_roomList});
-        fetch("/roomList.json")
+        fetch("/index.php/api/find_user_rooms")
             .then((res)=>{
                 return res.json();
             }).then(function(json){
@@ -72,7 +79,20 @@ class App extends React.Component {
             }
         });
 
-        fetch("/search.json")
+        let url = "/index.php/api/";
+        if(searchType == "room"){
+            url += "room_";
+        }else{
+            url += "vote_"
+        }
+
+        if(isNaN(searchWord)){
+            url += "url/"
+        }else{
+            url += "page/"
+        }
+
+        fetch(url+searchWord)
             .then((res)=>{
                 return res.json();
             }).then(function(json){
@@ -85,20 +105,38 @@ class App extends React.Component {
             }.bind(this));
     }
 
+    onRoomClick(sid){
+        alert(sid);
+    }
+
+    getVoteResult(sid){
+
+    }
+
+    onVoteSubmit(e){
+
+    }
+
     render() {
         return (
             <Container className="p-0">
                 <Navigation user={this.state.user.nickname}>Simpoll</Navigation>
                 <Row className="m-2">
                     <Col xs={12} md={6} className="p-1">
-                        <AlertBox/>
+                        <AlertBox data={this.alertList}/>
                     </Col>
                     <Col xs={12} md={6} className="p-1">
                         <SearchBox onSubmit={this.search} data={this.state.searchResult}/>
                     </Col>
                 </Row>
                 <Row className="m-2">
-                    <Main room-list-data={this.state.roomList}/>
+                    <Main 
+                        room-list-data={this.state.roomList} 
+                        onRoomClick={this.onRoomClick}
+                        vote-list-data={this.state.voteList} 
+                        getVoteResult={this.getVoteResult}
+                        onVoteSubmit={this.onVoteSubmit}
+                    />
                 </Row>
             </Container>
         );

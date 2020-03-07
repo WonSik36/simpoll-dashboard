@@ -1,15 +1,18 @@
 [
     {
+        "sid": 1,
         "title": "제목1",
         "master": "방장1",
         "part_num": 20
     },
     {
+        "sid": 2,
         "title": "제목2",
         "master": "방장2",
         "part_num": 30
     },
     {
+        "sid": 3,
         "title": "제목3",
         "master": "방장3",
         "part_num": 10

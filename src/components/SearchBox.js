@@ -1,6 +1,6 @@
 import React from 'react';
 import {Card, Form, Button, Spinner} from 'react-bootstrap';
-import './SearchBox.css';
+import './style/SearchBox.css';
 
 class SearchBox extends React.Component {
     constructor(props){
@@ -22,12 +22,13 @@ class SearchBox extends React.Component {
 
     onSearchSubmit(e){
         e.preventDefault();
-        this.props.onSubmit(e.currentTarget['search-word'].value,this.state.searchType);
+        this.props.onSubmit(e.currentTarget['search-word'].value,e.currentTarget['search-type'].value);
     }
 
     render() {
+        console.log("search box updated");
+        
         let _content = null;
-
         if(this.props.data.item.title!==null){
             _content = <>
                     {this.props.data.item.title} {this.props.data.item.cur_name}

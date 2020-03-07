@@ -1,7 +1,8 @@
 import React from 'react';
-import {Button, Collapse, ProgressBar, Form} from 'react-bootstrap';
+import {Button, Collapse, ProgressBar, Form, Spinner} from 'react-bootstrap';
 import { Doughnut } from 'react-chartjs-2';
-import './Vote.css';
+import './style/Vote.css';
+import BackgroundColorPreset from './json/chart';
 
 class Vote extends React.Component {
     constructor(props){
@@ -12,6 +13,13 @@ class Vote extends React.Component {
         };
         this.setOpen = this.setOpen.bind(this);
         this.onChoiceChange = this.onChoiceChange.bind(this);
+    }
+
+    shouldComponentUpdate(newProps, newState){
+        if(newProps.data === this.props.data)
+            return false;
+        else
+            return true;
     }
 
     setOpen(_open){
@@ -33,7 +41,7 @@ class Vote extends React.Component {
         if(this.props.done){
             let _data = {
                 datasets:[{
-                    backgroundColor:['#FF6384','#36A2EB','#FFCE56'],
+                    backgroundColor: BackgroundColorPreset,
                     data: [35,20,45]
                 }],
                 labels:['Choice1', 'Choice2', 'Choice3']
