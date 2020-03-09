@@ -12,7 +12,7 @@ class VoteList extends React.Component {
             let _voteList = this.props.data.items;
             for(let i=0;i<_voteList.length;i++){
                 _contents.push(
-                    <Vote data={_voteList[i]} key={(i+1)} onVoteSubmit={this.onVoteSubmit}/>
+                    <Vote data={_voteList[i]} key={(i+1)} idx={i} onVoteSubmit={this.props.onVoteSubmit}/>
                 ) 
             }
         }

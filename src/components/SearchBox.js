@@ -38,7 +38,7 @@ class SearchBox extends React.Component {
         let _content = null;
         if(this.props.data.item.title!==null){
             _content = <>
-                    {this.props.data.item.title} {this.props.data.item.cur_name}
+                    제목: {this.props.data.item.title} URL: {this.props.data.item.url_name}
                 </>;
         }
 

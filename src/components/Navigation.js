@@ -6,12 +6,12 @@ class Navigation extends React.Component {
     render() {
         return (
             <Navbar bg="primary" variant="dark">
-                <Navbar.Brand href="#">{this.props.children}</Navbar.Brand>
+                <Navbar.Brand href={this.props.href}>{this.props.children}</Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>
                         Signed in as: 
-                        <p className="nav-user">{this.props.user}</p>
+                        <p className="nav-user">{this.props.user.nickname}</p>
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Navbar>

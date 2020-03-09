@@ -39,17 +39,20 @@ class App extends React.Component {
         this.updateVoteList = this.updateVoteList.bind(this);
         this.getVoteResult = this.getVoteResult.bind(this);
         this.onVoteSubmit = this.onVoteSubmit.bind(this);
+        this.parseResponse = this.parseResponse.bind(this);
     }
 
     componentDidMount(){
         // get user from server
-        fetch("/user.json")
+        fetch("/index.php/api/user")
             .then((res)=>{
                 return res.json();
             }).then(function(json){
-                this.setState({
-                    user: json
-                });
+                this.parseResponse(json,function(data){
+                    this.setState({
+                        user: data
+                    });
+                }.bind(this));
             }.bind(this));
 
         // get room list from server
@@ -59,13 +62,16 @@ class App extends React.Component {
             .then((res)=>{
                 return res.json();
             }).then(function(json){
-                this.setState({
-                    roomList:{
-                        isLoading: false,
-                        items: json
-                    }
-                });
-                updateVoteList(json[0].sid);
+                this.parseResponse(json,function(data){
+                    this.setState({
+                        roomList:{
+                            isLoading: false,
+                            items: data
+                        }
+                    });
+                    if(data.length > 0)
+                        this.updateVoteList(data[0].sid);
+                }.bind(this));
             }.bind(this));
     }
 
@@ -73,10 +79,7 @@ class App extends React.Component {
         this.setState({
             searchResult:{
                 isLoading: true,
-                item: {
-                    "title":null,
-                    "cur_name":null
-                }
+                item: {}
             }
         });
 
@@ -97,49 +100,109 @@ class App extends React.Component {
             .then((res)=>{
                 return res.json();
             }).then(function(json){
-                this.setState({
-                    searchResult:{
-                        isLoading: false,
-                        item: json
-                    }
-                });
+                this.parseResponse(json,function(data){
+                    this.setState({
+                        searchResult:{
+                            isLoading: false,
+                            item: data
+                        }
+                    });
+                }.bind(this));
             }.bind(this));
     }
 
     // update vote list
     updateVoteList(sid){
-        alert(sid);
-        // fetch(url+searchWord)
-        //     .then((res)=>{
-        //         return res.json();
-        //     }).then(function(json){
-                    /* user was not voted*/
-        //         this.setState({
-        //             searchResult:{
-        //                 isLoading: false,
-        //                 item: json
-        //             }
-        //         });
-                    /* user was voted */
-                    // this.getVoteResult()
-        //     }.bind(this));
+        this.setState({
+            voteList:{
+                isLoading: true,
+                items: []
+            }
+        });
+
+        fetch("/index.php/api/find_room_votes/"+sid)
+            .then((res)=>{
+                return res.json();
+            }).then(function(json){
+                this.parseResponse(json,function(data){
+                    this.setState({
+                        voteList:{
+                            isLoading: false,
+                            items: data
+                        }
+                    });
+
+                    /* update already voted to result */
+                    this.getVoteResult(0,true);
+                }.bind(this));
+            }.bind(this));
     }
 
     // get vote result
     // this will be called vote in vote list was voted by user
-    getVoteResult(sid){
+    getVoteResult(idx, continuous){
+        if(idx >= this.state.voteList.items.length)
+            return;
 
+        // not voted
+        if(this.state.voteList.items[idx].voted === false){
+            this.getVoteResult(idx+1, continuous);
+            return;
+        }
+
+        // get vote sid
+        let sid = this.state.voteList.items[idx].sid;
+
+        // get vote result
+        fetch("/index.php/api/return_vote_result/"+sid)
+            .then((res)=>{
+                return res.json();
+            }).then(function(json){
+                this.parseResponse(json,function(data){
+                    data.title = this.state.voteList.items[idx].title;
+                    this.state.voteList.items[idx] = data;
+                    this.setState({
+                        voteList: this.state.voteList
+                    });
+
+                    if(continuous)
+                        this.getVoteResult(idx+1,continuous);
+                }.bind(this));
+            }.bind(this));
     }
 
     // this will be called when vote is submitted
     onVoteSubmit(e){
+        let contents_number = e.currentTarget['contents_number'].value;
+        let vote_id = e.currentTarget['vote_id'].value
+        let idx = e.currentTarget['idx'].value;
+        let resBody = {
+            "contents_number": contents_number,
+            "vote_id": vote_id
+        }
+        fetch("/index.php/api/voting",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(resBody)
+        }).then(function(res){
+            return res.json();
+        }).then(function(json){
+            if(json.result == "success"){
+                this.state.voteList.items[idx].voted = true;
+                this.getVoteResult(idx,false);
+            }else{
+                alert(json.message);
+            }
+        }.bind(this));
 
     }
 
     render() {
         return (
             <Container className="p-0">
-                <Navigation user={this.state.user.nickname}>Simpoll</Navigation>
+                <Navigation user={this.state.user} href="/index.php/home">Simpoll</Navigation>
                 <Row className="m-2">
                     <Col xs={12} md={6} className="p-1">
                         <AlertBox data={this.alertList}/>
@@ -158,6 +221,14 @@ class App extends React.Component {
                 </Row>
             </Container>
         );
+    }
+
+    parseResponse(res, callback){
+        if(res.result == "success"){
+            callback(res.data);
+        }else{
+            alert(res.message);
+        }
     }
 }
 
