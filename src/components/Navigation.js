@@ -3,6 +3,13 @@ import {Navbar} from 'react-bootstrap';
 import './style/Navigation.css';
 
 class Navigation extends React.Component {
+    shouldComponentUpdate(newProps, newState){
+        if(newProps.user === this.props.user)
+            return false;
+        else
+            return true;
+    }
+
     render() {
         return (
             <Navbar bg="primary" variant="dark">

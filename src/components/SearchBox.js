@@ -35,9 +35,21 @@ class SearchBox extends React.Component {
     render() {
         let _content = null;
         if(this.props.data.item.title!==null){
-            _content = <>
-                    제목: {this.props.data.item.title} URL: {this.props.data.item.url_name}
-                </>;
+            if(this.state.searchType == 'room'){
+                _content = <div className="search-box-content">
+                                <b>{this.props.data.item.title}</b><br/>
+                                <b>방장:</b> {this.props.data.item.master_nickname}<br/>
+                                <b>참여인원:</b> {this.props.data.item.part_num}<br/>
+                            <Button onClick={this.props.addRoom}>Room 참여</Button>
+                        </div>;
+            }else{
+                _content = <div className="search-box-content">
+                                <b>{this.props.data.item.title}</b><br/>
+                                <b>개설자:</b> {this.props.data.item.cur_name}<br/>
+                                <b>참여인원:</b> {this.props.data.item.part_num}<br/>
+                            <Button href="#">Simpoll 참여</Button>
+                        </div>;
+            }
         }
 
         if(this.props.data.isLoading){
@@ -50,7 +62,7 @@ class SearchBox extends React.Component {
                 <Card.Body>
                     <Form onSubmit={this.onSearchSubmit}>
                         <Form.Control required type="text" placeholder={this.state.placeholder} name="search-word"/>
-                        <Form.Group>
+                        <Form.Group className="p-1">
                             <Form.Check inline label="Room" type='radio' id='radio-1' 
                                 name="search-type" value="room"
                                 onChange={this.onSearchTypeChange}
@@ -64,9 +76,7 @@ class SearchBox extends React.Component {
                             </Button>
                         </Form.Group>
                     </Form>
-                    <div className="search-box-content">
                         {_content}
-                    </div>
                 </Card.Body>
             </Card>
         )

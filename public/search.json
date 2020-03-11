@@ -1,7 +1,9 @@
 {
     "result":"success",
     "data":{
-        "title":"제목",
-        "url_name": "test_URL"
+        "title":"제목~~",
+        "cur_name": "닉네임",
+        "master_nickname":"방장스러운이름",
+        "part_num":15
     }
 }

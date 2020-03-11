@@ -1,14 +1,16 @@
 import React from 'react';
-import {Container, Row, Col} from 'react-bootstrap';
-import Navigation from './components/Navigation'
-import AlertBox from './components/AlertBox'
-import SearchBox from './components/SearchBox'
-import Main from './components/Main'
+import {Container, Row, Col, ButtonToolbar, ToggleButtonGroup, ToggleButton} from 'react-bootstrap';
+import Navigation from './components/Navigation';
+import AlertBox from './components/AlertBox';
+import SearchBox from './components/SearchBox';
+import Main from './components/Main';
+import ModeButton from './components/ModeButton';
 
 class App extends React.Component {
     constructor(props){
         super(props);
         this.state = {
+            personType: "audience",
             user: {
                 email: null,
                 name: null,
@@ -40,39 +42,59 @@ class App extends React.Component {
         this.getVoteResult = this.getVoteResult.bind(this);
         this.onVoteSubmit = this.onVoteSubmit.bind(this);
         this.parseResponse = this.parseResponse.bind(this);
+        this.onPersonTypeChange = this.onPersonTypeChange.bind(this);
     }
 
     componentDidMount(){
         // get user from server
-        fetch("/user.json")
-            .then((res)=>{
-                return res.json();
-            }).then(function(json){
-                this.parseResponse(json,function(data){
-                    this.setState({
-                        user: data
-                    });
-                }.bind(this));
+        this.fetchTemplate("/user.json",
+            function(data){
+                this.setState({
+                    user: data
+                });
             }.bind(this));
 
         // get room list from server
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
         this.setState({roomList:_roomList});
-        fetch("/roomList.json")
+        this.fetchTemplate("/roomList.json",
+            function(data){
+                this.setState({
+                    roomList:{
+                        isLoading: false,
+                        items: data
+                    }
+                });
+                if(data.length > 0)
+                    this.updateVoteList(data[0].sid);
+            }.bind(this));
+    }
+
+    fetchTemplate(url,callback){
+        fetch(url)
             .then((res)=>{
                 return res.json();
-            }).then(function(json){
-                this.parseResponse(json,function(data){
-                    this.setState({
-                        roomList:{
-                            isLoading: false,
-                            items: data
-                        }
-                    });
-                    if(data.length > 0)
-                        this.updateVoteList(data[0].sid);
-                }.bind(this));
-            }.bind(this));
+            }).then((json)=>{
+                return new Promise((resolve, reject)=>{
+                    if(json.result == "success"){
+                        resolve(json.data);
+                    }else{
+                        reject(new Error(json.message));
+                    }
+                });
+            }).then((data)=>{callback(data)})
+            .catch((error)=>{
+                alert(error);
+            });
+    }
+
+    onPersonTypeChange(e){
+        this.setState({
+            personType: e.currentTarget.dataset.persontype
+        })
+        if(e.currentTarget.dataset.persontype == "audience"){
+        }else{
+        }
     }
 
     search(searchWord, searchType){
@@ -96,18 +118,14 @@ class App extends React.Component {
             url += "page/"
         }
 
-        fetch("/search.json")
-            .then((res)=>{
-                return res.json();
-            }).then(function(json){
-                this.parseResponse(json,function(data){
-                    this.setState({
-                        searchResult:{
-                            isLoading: false,
-                            item: data
-                        }
-                    });
-                }.bind(this));
+        this.fetchTemplate("/search.json",
+            function(data){
+                this.setState({
+                    searchResult:{
+                        isLoading: false,
+                        item: data
+                    }
+                });
             }.bind(this));
     }
 
@@ -120,21 +138,17 @@ class App extends React.Component {
             }
         });
 
-        fetch("voteList.json")
-            .then((res)=>{
-                return res.json();
-            }).then(function(json){
-                this.parseResponse(json,function(data){
-                    this.setState({
-                        voteList:{
-                            isLoading: false,
-                            items: data
-                        }
-                    });
+        this.fetchTemplate("voteList.json",
+            function(data){
+                this.setState({
+                    voteList:{
+                        isLoading: false,
+                        items: data
+                    }
+                });
 
-                    /* update already voted to result */
-                    this.getVoteResult(0,true);
-                }.bind(this));
+                /* update already voted to result */
+                this.getVoteResult(0,true);
             }.bind(this));
     }
 
@@ -154,20 +168,16 @@ class App extends React.Component {
         let sid = this.state.voteList.items[idx].sid;
 
         // get vote result
-        fetch("/voteResult.json")
-            .then((res)=>{
-                return res.json();
-            }).then(function(json){
-                this.parseResponse(json,function(data){
-                    // data.title = this.state.voteList.items[idx].title;
-                    this.state.voteList.items[idx] = data;
-                    this.setState({
-                        voteList: this.state.voteList
-                    });
+        this.fetchTemplate("/voteResult.json",
+            function(data){
+                // data.title = this.state.voteList.items[idx].title;
+                this.state.voteList.items[idx] = data;
+                this.setState({
+                    voteList: this.state.voteList
+                });
 
-                    if(continuous)
-                        this.getVoteResult(idx+1,continuous);
-                }.bind(this));
+                if(continuous)
+                    this.getVoteResult(idx+1,continuous);
             }.bind(this));
     }
 
@@ -181,18 +191,22 @@ class App extends React.Component {
             "vote_id": vote_id
         }
 
-        fetch("/voteResult.json")
-        .then(function(res){
-            return res.json();
-        }).then(function(json){
-            if(json.result == "success"){
+        this.fetchTemplate("/voteResult.json",
+            function(data){
                 this.state.voteList.items[idx].voted = true;
                 this.getVoteResult(idx,false);
-            }else{
-                alert(json.message);
-            }
-        }.bind(this));
+            }.bind(this));
+    }
 
+    participateRoom(room){
+        fetch("url")
+            .then(function(res){
+                return res.json();
+            }).then(function(json){
+                // this.parseResponse
+            }.bind(this))
+        let _roomList = Object.assign({}, this.state.roomList);
+        _roomList.items.unshift(room);
     }
 
     render() {
@@ -204,9 +218,11 @@ class App extends React.Component {
                         <AlertBox data={this.alertList}/>
                     </Col>
                     <Col xs={12} md={6} className="p-1">
-                        <SearchBox onSubmit={this.search} data={this.state.searchResult}/>
+                        <SearchBox onSubmit={this.search} data={this.state.searchResult} addRoom={this.participateRoom}/>
                     </Col>
                 </Row>
+                <ModeButton personType={this.state.personType} onPersonTypeChange={this.onPersonTypeChange} />
+                
                 <Row className="m-2">
                     <Main 
                         room-list-data={this.state.roomList} 

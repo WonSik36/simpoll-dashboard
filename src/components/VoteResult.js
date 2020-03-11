@@ -15,6 +15,13 @@ class VoteResult extends React.Component {
         this.setOpen = this.setOpen.bind(this);
     }
 
+    shouldComponentUpdate(newProps, newState){
+        if(newProps.data === this.props.data && newState === this.state)
+            return false;
+        else
+            return true;
+    }
+
     setOpen(_open){
         this.setState({
             open: _open
@@ -77,26 +84,14 @@ class VoteResult extends React.Component {
                 <Card.Body>
                     <Collapse in={this.state.open}>
                         <div id={"collapse-vote-"+this.props.idx}>
-                            <Doughnut data={_data} />
+                            <Doughnut 
+                                data={_data} 
+                                width={100}
+                                height={50}/>
                         </div>
                     </Collapse>
                 </Card.Body>
             </Card>
-            // <div className="vote-container">
-            //     <h5>{this.props.data.title}</h5>
-            //     <VoteResultProgress data={this.props.data}/>
-            //     <Button
-            //         variant='light'
-            //         onClick={() => this.setOpen(!this.state.open)}
-            //         aria-controls={"collapse-vote-"+this.props.data.sid}
-            //         aria-expanded={this.state.open}
-            //     >V</Button>
-            //     <Collapse in={this.state.open}>
-            //         <div id={"collapse-vote-"+this.props.data.sid}>
-            //             {_contents}
-            //         </div>
-            //     </Collapse>
-            // </div>
         )
     }   
 }
