@@ -33,8 +33,6 @@ class SearchBox extends React.Component {
     }
 
     render() {
-        console.log("search box updated");
-        
         let _content = null;
         if(this.props.data.item.title!==null){
             _content = <>

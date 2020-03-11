@@ -44,7 +44,7 @@ class App extends React.Component {
 
     componentDidMount(){
         // get user from server
-        fetch("/user.json")
+        fetch("/index.php/api/user")
             .then((res)=>{
                 return res.json();
             }).then(function(json){
@@ -58,7 +58,7 @@ class App extends React.Component {
         // get room list from server
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
         this.setState({roomList:_roomList});
-        fetch("/roomList.json")
+        fetch("/index.php/api/find_user_rooms")
             .then((res)=>{
                 return res.json();
             }).then(function(json){
@@ -96,7 +96,7 @@ class App extends React.Component {
             url += "page/"
         }
 
-        fetch("/search.json")
+        fetch(url+searchWord)
             .then((res)=>{
                 return res.json();
             }).then(function(json){
@@ -120,7 +120,7 @@ class App extends React.Component {
             }
         });
 
-        fetch("voteList.json")
+        fetch("/index.php/api/find_room_votes/"+sid)
             .then((res)=>{
                 return res.json();
             }).then(function(json){
@@ -154,12 +154,12 @@ class App extends React.Component {
         let sid = this.state.voteList.items[idx].sid;
 
         // get vote result
-        fetch("/voteResult.json")
+        fetch("/index.php/api/return_vote_result/"+sid)
             .then((res)=>{
                 return res.json();
             }).then(function(json){
                 this.parseResponse(json,function(data){
-                    // data.title = this.state.voteList.items[idx].title;
+                    data.title = this.state.voteList.items[idx].title;
                     this.state.voteList.items[idx] = data;
                     this.setState({
                         voteList: this.state.voteList
@@ -180,9 +180,13 @@ class App extends React.Component {
             "contents_number": contents_number,
             "vote_id": vote_id
         }
-
-        fetch("/voteResult.json")
-        .then(function(res){
+        fetch("/index.php/api/voting",{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(resBody)
+        }).then(function(res){
             return res.json();
         }).then(function(json){
             if(json.result == "success"){

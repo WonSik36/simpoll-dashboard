@@ -1,6 +1,7 @@
 import React from 'react';
 import {Spinner} from 'react-bootstrap';
-import Vote from './Vote';
+import VoteResult from './VoteResult';
+import VoteChoice from './VoteChoice';
 
 class VoteList extends React.Component {
     render() {
@@ -11,9 +12,15 @@ class VoteList extends React.Component {
         }else{
             let _voteList = this.props.data.items;
             for(let i=0;i<_voteList.length;i++){
-                _contents.push(
-                    <Vote data={_voteList[i]} key={(i+1)} idx={i} onVoteSubmit={this.props.onVoteSubmit}/>
-                ) 
+                if(_voteList[i].voted){
+                    _contents.push(
+                        <VoteResult data={_voteList[i]} key={(i+1)} idx={i}/>
+                    ) 
+                }else{
+                    _contents.push(
+                        <VoteChoice data={_voteList[i]} key={(i+1)} idx={i} onVoteSubmit={this.props.onVoteSubmit}/>
+                    ) 
+                }
             }
         }
 

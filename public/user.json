@@ -1,5 +1,8 @@
 {
-    "email": "email@example.com",
-    "name": "user",
-    "nickname": "nickname"
+    "result":"success",
+    "data":{
+        "email": "email@example.com",
+        "name": "user",
+        "nickname": "nickname"
+    }
 }

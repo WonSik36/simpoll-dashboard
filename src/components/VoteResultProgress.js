@@ -5,16 +5,12 @@ class VoteResultProgress extends React.Component {
     constructor(props){
         super(props);
         this.state= {
-            colors : ["success", "warning", "danger", "info", "primary"]
+            colors : ["primary", "secondary", "success", "danger", "warning", "info"]
         };
     }
 
     render() {
-        if(!this.props.data.voted){
-            return null;
-        }
-
-        if(this.props.data.label == null){
+        if(this.props.data.label === undefined){
             return null;
         }
 
@@ -24,15 +20,13 @@ class VoteResultProgress extends React.Component {
         }
         
         let _bars = [];
-        if(sum != 0){
-            for(let i=0;i<this.props.data.label.length;i++){
-                _bars.push(
-                    <ProgressBar animated key={(i+1)}
-                        variant={this.state.colors[(i%this.state.colors.length)]} 
-                        now={(this.props.data.data[i]*100/sum)} 
-                        label={this.props.data.label[i]} />
-                    );
-            }
+        for(let i=0;i<this.props.data.label.length;i++){
+            _bars.push(
+                <ProgressBar animated key={(i+1)}
+                    variant={this.state.colors[(i%this.state.colors.length)]} 
+                    now={(this.props.data.data[i]*100/sum)} 
+                    label={this.props.data.label[i]} />
+                );
         }
 
         return (

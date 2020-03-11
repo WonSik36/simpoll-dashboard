@@ -1,4 +1,7 @@
 {
-    "title":"제목",
-    "cur_name": "유저"
+    "result":"success",
+    "data":{
+        "title":"제목",
+        "url_name": "test_URL"
+    }
 }

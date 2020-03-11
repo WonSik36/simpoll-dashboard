@@ -21,8 +21,6 @@ class RoomList extends React.Component {
     }
 
     render() {
-        console.log("room list is updated");
-
         let _contents = [];
         if(this.props.data.isLoading){
             _contents = <Spinner animation="border" variant="primary"/>;

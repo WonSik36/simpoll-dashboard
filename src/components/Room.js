@@ -2,7 +2,6 @@ import React from 'react';
 
 class Room extends React.Component {
     render() {
-        console.log("room "+this.props.data.title+" is updated");
         return ( 
             <>
                 <h4>{this.props.data.title}</h4>

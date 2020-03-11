@@ -10,7 +10,6 @@ class AlertBox extends React.Component {
     }
 
     render() {
-        console.log("alert box updated");
         return (
             <Card>
                 <Card.Header>알림</Card.Header>

@@ -6,8 +6,6 @@ import './style/Main.css';
 
 class Main extends React.Component {
     render() {
-        console.log("Main is updated");
-
         return (
             <Container className="main-container">
                 <Row>
