@@ -14,7 +14,7 @@ class MainSpeacker extends React.Component {
                             <h3 className="inline">Room</h3>
                             <Button variant="light" className="float-right">
                                 <span>
-                                    <i class="fas fa-plus"></i>
+                                    <i className="fas fa-plus"></i>
                                 </span>
                             </Button>
                         </div>
@@ -27,7 +27,7 @@ class MainSpeacker extends React.Component {
                             <h3 className="inline">Simpoll</h3>
                             <Button variant="light"  className="float-right">
                                 <span>
-                                    <i class="fas fa-plus"></i>
+                                    <i className="fas fa-plus"></i>
                                 </span>
                             </Button>
                         </div>

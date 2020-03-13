@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container, Row, Col, ButtonToolbar, ToggleButtonGroup, ToggleButton} from 'react-bootstrap';
+import {Container, Row, Col} from 'react-bootstrap';
 import Navigation from './components/Navigation';
 import AlertBox from './components/AlertBox';
 import SearchBox from './components/SearchBox';

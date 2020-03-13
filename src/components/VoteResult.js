@@ -22,9 +22,7 @@ class VoteResult extends React.Component {
     }
 
     render() {
-        // console.log(this.props.data);
         if(this.props.data.result === undefined){
-            console.log(this.props.data);
             return null;
         }
 
