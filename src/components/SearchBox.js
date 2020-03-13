@@ -32,6 +32,11 @@ class SearchBox extends React.Component {
         this.props.onSubmit(e.currentTarget['search-word'].value,e.currentTarget['search-type'].value);
     }
 
+    onAddRoom(e){
+        e.preventDefault();        
+        this.props.addRoom(this.props.data.item.sid);
+    }
+
     render() {
         let _content = null;
         if(this.props.data.item.title!==null){

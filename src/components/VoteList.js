@@ -11,15 +11,23 @@ class VoteList extends React.Component {
             _contents = <Spinner animation="border" variant="primary"/>;
         }else{
             let _voteList = this.props.data.items;
-            for(let i=0;i<_voteList.length;i++){
-                if(_voteList[i].voted){
+            if(!this.props.isAudience){
+                for(let i=0;i<_voteList.length;i++){
                     _contents.push(
                         <VoteResult data={_voteList[i]} key={(i+1)} idx={i}/>
                     ) 
-                }else{
-                    _contents.push(
-                        <VoteChoice data={_voteList[i]} key={(i+1)} idx={i} onVoteSubmit={this.props.onVoteSubmit}/>
-                    ) 
+                }
+            }else{
+                for(let i=0;i<_voteList.length;i++){
+                    if(_voteList[i].voted){
+                        _contents.push(
+                            <VoteResult data={_voteList[i]} key={(i+1)} idx={i}/>
+                        ) 
+                    }else{
+                        _contents.push(
+                            <VoteChoice data={_voteList[i]} key={(i+1)} idx={i} onVoteSubmit={this.props.onVoteSubmit}/>
+                        ) 
+                    }
                 }
             }
         }

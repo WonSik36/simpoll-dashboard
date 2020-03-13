@@ -4,7 +4,7 @@ import VoteList from './VoteList';
 import RoomList from './RoomList';
 import './style/Main.css';
 
-class Main extends React.Component {
+class MainAudience extends React.Component {
     render() {
         return (
             <Container className="main-container">
@@ -19,7 +19,9 @@ class Main extends React.Component {
                         <h3>Simpoll</h3>
                         <VoteList 
                             data={this.props['vote-list-data']} 
-                            onVoteSubmit={this.props['onVoteSubmit']}/>
+                            onVoteSubmit={this.props['onVoteSubmit']}
+                            isAudience={true}
+                        />
                     </Col>
                 </Row>
             </Container>
@@ -27,4 +29,4 @@ class Main extends React.Component {
     }   
 }
 
-export default Main;
+export default MainAudience;

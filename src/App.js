@@ -3,7 +3,8 @@ import {Container, Row, Col, ButtonToolbar, ToggleButtonGroup, ToggleButton} fro
 import Navigation from './components/Navigation';
 import AlertBox from './components/AlertBox';
 import SearchBox from './components/SearchBox';
-import Main from './components/Main';
+import MainAudience from './components/MainAudience';
+import MainSpeacker from './components/MainSpeacker';
 import ModeButton from './components/ModeButton';
 
 class App extends React.Component {
@@ -37,40 +38,32 @@ class App extends React.Component {
             }
         }
 
+        this.fetchTemplate = this.fetchTemplate.bind(this);
+        this.getUserInfo = this.getUserInfo.bind(this);
+        this.getRoomList = this.getRoomList.bind(this);
+        this.changePersonType = this.changePersonType.bind(this);
         this.search = this.search.bind(this);
         this.updateVoteList = this.updateVoteList.bind(this);
         this.getVoteResult = this.getVoteResult.bind(this);
         this.onVoteSubmit = this.onVoteSubmit.bind(this);
-        this.parseResponse = this.parseResponse.bind(this);
-        this.onPersonTypeChange = this.onPersonTypeChange.bind(this);
+        this.participateRoom = this.participateRoom.bind(this);
     }
 
     componentDidMount(){
         // get user from server
-        this.fetchTemplate("/user.json",
-            function(data){
-                this.setState({
-                    user: data
-                });
-            }.bind(this));
+        this.getUserInfo();
 
         // get room list from server
-        let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
-        this.setState({roomList:_roomList});
-        this.fetchTemplate("/roomList.json",
-            function(data){
-                this.setState({
-                    roomList:{
-                        isLoading: false,
-                        items: data
-                    }
-                });
-                if(data.length > 0)
-                    this.updateVoteList(data[0].sid);
-            }.bind(this));
+        this.getRoomList(true);
     }
 
-    fetchTemplate(url,callback){
+    fetchTemplate(url, loadingState, callback){
+        let oldState;
+        if(loadingState !== null){
+            oldState = this.state;
+            this.setState(loadingState);
+        }
+
         fetch(url)
             .then((res)=>{
                 return res.json();
@@ -83,27 +76,64 @@ class App extends React.Component {
                     }
                 });
             }).then((data)=>{callback(data)})
-            .catch((error)=>{
-                alert(error);
-            });
+            .catch(function(err){
+                alert(err.message);
+                if(loadingState !== null){
+                    this.setState(oldState);
+                }
+            }.bind(this));
     }
 
-    onPersonTypeChange(e){
-        this.setState({
-            personType: e.currentTarget.dataset.persontype
-        })
-        if(e.currentTarget.dataset.persontype == "audience"){
+    getUserInfo(){
+        this.fetchTemplate("/user.json",null,
+            function(data){
+                this.setState({
+                    user: data
+                });
+            }.bind(this));
+    }
+
+    getRoomList(isAudience){
+        let url;
+        if(isAudience)
+            url = "/roomList.json";
+        else
+            url = "/roomList.json";
+
+        let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
+        this.fetchTemplate(url,{roomList:_roomList},
+            function(data){
+                this.setState({
+                    roomList:{
+                        isLoading: false,
+                        items: data
+                    }
+                });
+                if(data.length > 0)
+                    this.updateVoteList(data[0].sid, isAudience);
+            }.bind(this));
+    }
+
+    changePersonType(isAudience){
+        if(isAudience){
+            this.setState({
+                personType: "audience"
+            })
         }else{
+            this.setState({
+                personType: "speacker"
+            })
         }
+        this.getRoomList(isAudience);
     }
 
     search(searchWord, searchType){
-        this.setState({
+        let loadingState = {
             searchResult:{
                 isLoading: true,
                 item: {}
             }
-        });
+        };
 
         let url = "/index.php/api/";
         if(searchType == "room"){
@@ -118,7 +148,7 @@ class App extends React.Component {
             url += "page/"
         }
 
-        this.fetchTemplate("/search.json",
+        this.fetchTemplate("/search.json", loadingState,
             function(data){
                 this.setState({
                     searchResult:{
@@ -130,16 +160,25 @@ class App extends React.Component {
     }
 
     // update vote list
-    updateVoteList(sid){
-        this.setState({
+    updateVoteList(sid, isAudience){
+        let loadingState = {
             voteList:{
                 isLoading: true,
                 items: []
             }
-        });
+        };
+        
+        let url;
+        if(isAudience){
+            url = "voteList.json";
+        }else{
+            url = "voteListSpeacker.json";
+        }
 
-        this.fetchTemplate("voteList.json",
+        this.fetchTemplate(url,loadingState,
             function(data){
+
+                data = this.checkDeadlineAndSortVoteList(data);
                 this.setState({
                     voteList:{
                         isLoading: false,
@@ -148,7 +187,8 @@ class App extends React.Component {
                 });
 
                 /* update already voted to result */
-                this.getVoteResult(0,true);
+                if(isAudience)
+                    this.getVoteResult(0,true);
             }.bind(this));
     }
 
@@ -168,10 +208,10 @@ class App extends React.Component {
         let sid = this.state.voteList.items[idx].sid;
 
         // get vote result
-        this.fetchTemplate("/voteResult.json",
+        this.fetchTemplate("/voteResult.json",null,
             function(data){
-                // data.title = this.state.voteList.items[idx].title;
-                this.state.voteList.items[idx] = data;
+                let _newVote = Object.assign(this.state.voteList.items[idx],{result: data});
+                this.state.voteList.items[idx] = _newVote;
                 this.setState({
                     voteList: this.state.voteList
                 });
@@ -191,25 +231,71 @@ class App extends React.Component {
             "vote_id": vote_id
         }
 
-        this.fetchTemplate("/voteResult.json",
+        this.fetchTemplate("/voteResult.json",null,
             function(data){
                 this.state.voteList.items[idx].voted = true;
                 this.getVoteResult(idx,false);
             }.bind(this));
     }
 
-    participateRoom(room){
+    participateRoom(roomId){
         fetch("url")
             .then(function(res){
                 return res.json();
             }).then(function(json){
                 // this.parseResponse
             }.bind(this))
-        let _roomList = Object.assign({}, this.state.roomList);
-        _roomList.items.unshift(room);
+            
+        this.changePersonType(true);
+    }
+
+    checkDeadlineAndSortVoteList(voteList){
+        let curDate = new Date();
+        for(let i=0;i<voteList.length;i++){
+            let deadlineDate = new Date(voteList[i].deadline);
+            if(deadlineDate <= curDate)
+                voteList[i].voted = true;
+        }
+
+        voteList.sort(function(v1,v2){
+
+            // 둘다 투표를한경우 혹은 둘다 안한경우
+            if((v1.voted && v2.voted)||(!v1.voted && !v2.voted)){
+                if(v1.sid>v2.sid){
+                    return -1;
+                }else{
+                    return 1;
+                }
+            // v1만 투표를 한 경우
+            }else if(v1.voted && !v2.voted){
+                return 1;
+            // v2만 투표를 한 경우
+            }else{
+                return -1;
+            }
+        });
+
+        return voteList;
     }
 
     render() {
+        let _main = null;
+        if(this.state.personType == 'audience'){
+            _main = <MainAudience 
+                        room-list-data={this.state.roomList} 
+                        onRoomClick={this.updateVoteList}
+                        vote-list-data={this.state.voteList} 
+                        onVoteSubmit={this.onVoteSubmit}
+                    />;
+        }else{
+            _main = <MainSpeacker 
+                        room-list-data={this.state.roomList} 
+                        onRoomClick={this.updateVoteList}
+                        vote-list-data={this.state.voteList} 
+                        onVoteSubmit={this.onVoteSubmit}
+                    />
+        }
+
         return (
             <Container className="p-0">
                 <Navigation user={this.state.user} href="/index.php/home">Simpoll</Navigation>
@@ -221,26 +307,13 @@ class App extends React.Component {
                         <SearchBox onSubmit={this.search} data={this.state.searchResult} addRoom={this.participateRoom}/>
                     </Col>
                 </Row>
-                <ModeButton personType={this.state.personType} onPersonTypeChange={this.onPersonTypeChange} />
+                <ModeButton personType={this.state.personType} onPersonTypeChange={this.changePersonType} />
                 
                 <Row className="m-2">
-                    <Main 
-                        room-list-data={this.state.roomList} 
-                        onRoomClick={this.updateVoteList}
-                        vote-list-data={this.state.voteList} 
-                        onVoteSubmit={this.onVoteSubmit}
-                    />
+                    {_main}
                 </Row>
             </Container>
         );
-    }
-
-    parseResponse(res, callback){
-        if(res.result == "success"){
-            callback(res.data);
-        }else{
-            alert(res.message);
-        }
     }
 }
 

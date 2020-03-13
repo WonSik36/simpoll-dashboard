@@ -1,5 +1,6 @@
 {
-    "result":"success",
+    "result":"fail",
+    "message":"Please Login",
     "data":{
         "title":"제목~~",
         "cur_name": "닉네임",

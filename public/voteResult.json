@@ -1,12 +1,8 @@
 {
     "result":"success",
     "data":{
-        "sid":1,
-        "title":"vote1",
         "data":[5,6,7,2],
         "label":["choice1","choice2","choice3","choice4"],
-        "deadline":"2020-03-20 11:00:00",
-        "voted":true,
-        "choice":[1]
+        "contents_number":"2"
     }
 }

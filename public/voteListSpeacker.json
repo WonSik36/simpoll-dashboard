@@ -9,7 +9,12 @@
             "title":"vote4",
             "contents": "choice1|choice2|choice3|choice4",
             "deadline": "2020-03-20 11:00:00",
-            "voted":false
+            "voted":false,
+            "result":{
+                "data":[5,6,7,2],
+                "label":["choice1","choice2","choice3","choice4"],
+                "contents_number":"2"
+            }
         },
         {
             "sid":3,
@@ -19,7 +24,12 @@
             "title":"vote3",
             "contents": "choice1|choice2|choice3|choice4",
             "deadline": "2020-03-22 23:00:00",
-            "voted":true
+            "voted":true,
+            "result":{
+                "data":[5,6,7,2],
+                "label":["choice1","choice2","choice3","choice4"],
+                "contents_number":"2"
+            }
         },
         {   
             "sid":2,
@@ -29,7 +39,12 @@
             "title":"vote2",
             "contents": "choice1|choice2|choice3|choice4",
             "deadline": "2020-03-22 23:00:00",
-            "voted":false
+            "voted":false,
+            "result":{
+                "data":[5,6,7,2],
+                "label":["choice1","choice2","choice3","choice4"],
+                "contents_number":"2"
+            }
         },
         {   
             "sid":1,
@@ -39,7 +54,12 @@
             "title":"vote1",
             "contents": "choice1|choice2|choice3|choice4",
             "deadline": "2020-03-10 23:00:00",
-            "voted":false
+            "voted":false,
+            "result":{
+                "data":[5,6,7,2],
+                "label":["choice1","choice2","choice3","choice4"],
+                "contents_number":"2"
+            }
         }
     ]
 }

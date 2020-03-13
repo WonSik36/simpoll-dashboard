@@ -15,13 +15,6 @@ class VoteResult extends React.Component {
         this.setOpen = this.setOpen.bind(this);
     }
 
-    shouldComponentUpdate(newProps, newState){
-        if(newProps.data === this.props.data && newState === this.state)
-            return false;
-        else
-            return true;
-    }
-
     setOpen(_open){
         this.setState({
             open: _open
@@ -29,14 +22,18 @@ class VoteResult extends React.Component {
     }
 
     render() {
-        console.log(this.props.data);
+        // console.log(this.props.data);
+        if(this.props.data.result === undefined){
+            console.log(this.props.data);
+            return null;
+        }
 
         let _data = {
             datasets:[{
                 backgroundColor: BackgroundColorPreset,
-                data: this.props.data.data
+                data: this.props.data.result.data
             }],
-            labels: this.props.data.label
+            labels: this.props.data.result.label
         }
 
         let _arrow;
@@ -64,7 +61,7 @@ class VoteResult extends React.Component {
                                     <Col xs={12} md={6}>제목: {this.props.data.title}</Col>
                                     <Col xs={12} md={6}>마감기한: {this.props.data.deadline}</Col>
                                     <Col xs={12}>
-                                        <VoteResultProgress data={this.props.data}/>
+                                        <VoteResultProgress data={this.props.data.result}/>
                                     </Col>
                                 </Row>
                             </Col>
