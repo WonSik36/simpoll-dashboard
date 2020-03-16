@@ -45,7 +45,10 @@ class App extends React.Component {
         this.search = this.search.bind(this);
         this.updateVoteList = this.updateVoteList.bind(this);
         this.getVoteResult = this.getVoteResult.bind(this);
-        this.onVoteSubmit = this.onVoteSubmit.bind(this);
+        this.submitVote = this.submitVote.bind(this);
+        this.deleteVote = this.deleteVote.bind(this);
+        this.deleteRoom = this.deleteRoom.bind(this);
+        this.updateChoice = this.updateChoice.bind(this);
         this.participateRoom = this.participateRoom.bind(this);
     }
 
@@ -198,8 +201,11 @@ class App extends React.Component {
         if(idx >= this.state.voteList.items.length)
             return;
 
+        let _voted = this.state.voteList.items[idx].voted;
+        let _isDeadlinePass = this.state.voteList.items[idx].isDeadlinePass;
+
         // not voted
-        if(this.state.voteList.items[idx].voted === false){
+        if(_voted === false && _isDeadlinePass === false){
             this.getVoteResult(idx+1, continuous);
             return;
         }
@@ -222,7 +228,7 @@ class App extends React.Component {
     }
 
     // this will be called when vote is submitted
-    onVoteSubmit(e){
+    submitVote(e){
         let contents_number = e.currentTarget['contents_number'].value;
         let vote_id = e.currentTarget['vote_id'].value
         let idx = e.currentTarget['idx'].value;
@@ -236,6 +242,24 @@ class App extends React.Component {
                 this.state.voteList.items[idx].voted = true;
                 this.getVoteResult(idx,false);
             }.bind(this));
+    }
+
+    deleteVote(voteId){
+        alert("Simpoll이 삭제되었습니다!");
+        //fetch
+        //update vote list
+    }
+
+    deleteRoom(roomId){
+        alert("Room이 삭제되었습니다!");
+        //fetch
+        //update room list
+    }
+
+    updateChoice(choiceId, contentsNumber, idx){
+        alert("선택이 수정되었습니다!");
+        //fetch
+        //update vote by getVoteResult
     }
 
     participateRoom(roomId){
@@ -254,20 +278,24 @@ class App extends React.Component {
         for(let i=0;i<voteList.length;i++){
             let deadlineDate = new Date(voteList[i].deadline);
             if(deadlineDate <= curDate)
-                voteList[i].voted = true;
+                voteList[i].isDeadlinePass = true;
+            else
+                voteList[i].isDeadlinePass = false;
         }
 
         voteList.sort(function(v1,v2){
+            let v1Cond = v1.voted || v1.isDeadlinePass;
+            let v2Cond = v2.voted || v2.isDeadlinePass;
 
             // 둘다 투표를한경우 혹은 둘다 안한경우
-            if((v1.voted && v2.voted)||(!v1.voted && !v2.voted)){
+            if((v1Cond && v2Cond)||(!v1Cond && !v2Cond)){
                 if(v1.sid>v2.sid){
                     return -1;
                 }else{
                     return 1;
                 }
             // v1만 투표를 한 경우
-            }else if(v1.voted && !v2.voted){
+            }else if(v1Cond && !v2Cond){
                 return 1;
             // v2만 투표를 한 경우
             }else{
@@ -285,14 +313,17 @@ class App extends React.Component {
                         room-list-data={this.state.roomList} 
                         onRoomClick={this.updateVoteList}
                         vote-list-data={this.state.voteList} 
-                        onVoteSubmit={this.onVoteSubmit}
+                        onVoteSubmit={this.submitVote}
+                        onUpdateChoice={this.updateChoice}
                     />;
         }else{
             _main = <MainSpeacker 
                         room-list-data={this.state.roomList} 
                         onRoomClick={this.updateVoteList}
                         vote-list-data={this.state.voteList} 
-                        onVoteSubmit={this.onVoteSubmit}
+                        onVoteSubmit={this.submitVote}
+                        onVoteDelete={this.deleteVote}
+                        onRoomDelete={this.deleteRoom}
                     />
         }
 

@@ -20,7 +20,9 @@ class MainSpeacker extends React.Component {
                         </div>
                         <RoomList 
                             data={this.props['room-list-data']} 
-                            onRoomClick={this.props.onRoomClick}/>
+                            onRoomClick={this.props.onRoomClick}
+                            isAudience={false}
+                            onRoomDelete={this.props.onRoomDelete}/>
                     </Col>
                     <Col sm={8}>
                         <div className="m-2">
@@ -35,6 +37,7 @@ class MainSpeacker extends React.Component {
                             data={this.props['vote-list-data']} 
                             onVoteSubmit={this.props['onVoteSubmit']}
                             isAudience={false}
+                            onVoteDelete={this.props.onVoteDelete}
                         />
                     </Col>
                 </Row>

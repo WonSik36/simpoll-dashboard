@@ -1,6 +1,7 @@
 import React from 'react';
 import {Spinner} from 'react-bootstrap';
-import VoteResult from './VoteResult';
+import VoteResultAudience from './VoteResultAudience';
+import VoteResultSpeacker from './VoteResultSpeacker';
 import VoteChoice from './VoteChoice';
 
 class VoteList extends React.Component {
@@ -14,14 +15,14 @@ class VoteList extends React.Component {
             if(!this.props.isAudience){
                 for(let i=0;i<_voteList.length;i++){
                     _contents.push(
-                        <VoteResult data={_voteList[i]} key={(i+1)} idx={i}/>
+                        <VoteResultSpeacker data={_voteList[i]} key={(i+1)} idx={i} onVoteDelete={this.props.onVoteDelete}/>
                     ) 
                 }
             }else{
                 for(let i=0;i<_voteList.length;i++){
-                    if(_voteList[i].voted){
+                    if(_voteList[i].voted || _voteList[i].isDeadlinePass){
                         _contents.push(
-                            <VoteResult data={_voteList[i]} key={(i+1)} idx={i}/>
+                            <VoteResultAudience data={_voteList[i]} key={(i+1)} idx={i} onUpdateChoice={this.props.onUpdateChoice}/>
                         ) 
                     }else{
                         _contents.push(

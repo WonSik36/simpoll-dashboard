@@ -13,7 +13,8 @@ class MainAudience extends React.Component {
                         <h3>Room</h3>
                         <RoomList 
                             data={this.props['room-list-data']} 
-                            onRoomClick={this.props.onRoomClick}/>
+                            onRoomClick={this.props.onRoomClick}
+                            isAudience={true}/>
                     </Col>
                     <Col sm={8}>
                         <h3>Simpoll</h3>
@@ -21,6 +22,7 @@ class MainAudience extends React.Component {
                             data={this.props['vote-list-data']} 
                             onVoteSubmit={this.props['onVoteSubmit']}
                             isAudience={true}
+                            onUpdateChoice={this.props.onUpdateChoice}
                         />
                     </Col>
                 </Row>

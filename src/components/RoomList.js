@@ -32,7 +32,11 @@ class RoomList extends React.Component {
                         key={(i+1)} href={"#room-link"+(i+1)}
                         onClick={this.onRoomClick}
                         data-sid={this.props.data.items[i].sid}>
-                            <Room data={this.props.data.items[i]} key={(i+1)}/>
+                            <Room 
+                                data={this.props.data.items[i]} 
+                                key={(i+1)} 
+                                isAudience={this.props.isAudience}
+                                onRoomDelete={this.props.onRoomDelete}/>
                     </Nav.Link>
                 );
             }
