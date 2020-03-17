@@ -46,6 +46,8 @@ class App extends React.Component {
         this.updateVoteList = this.updateVoteList.bind(this);
         this.getVoteResult = this.getVoteResult.bind(this);
         this.submitVote = this.submitVote.bind(this);
+        this.createVote = this.createVote.bind(this);
+        this.createRoom = this.createRoom.bind(this);
         this.deleteVote = this.deleteVote.bind(this);
         this.deleteRoom = this.deleteRoom.bind(this);
         this.updateChoice = this.updateChoice.bind(this);
@@ -244,6 +246,18 @@ class App extends React.Component {
             }.bind(this));
     }
 
+    createVote(vote){
+        alert("심폴이 생성되었습니다!");
+        //fetch
+        //update vote list
+    }
+
+    createRoom(room){
+        alert("방이 생성되었습니다!");
+        //fetch
+        //update vote list
+    }
+
     deleteVote(voteId){
         alert("Simpoll이 삭제되었습니다!");
         //fetch
@@ -322,6 +336,8 @@ class App extends React.Component {
                         onRoomClick={this.updateVoteList}
                         vote-list-data={this.state.voteList} 
                         onVoteSubmit={this.submitVote}
+                        onVoteCreate={this.createVote}
+                        onRoomCreate={this.createRoom}
                         onVoteDelete={this.deleteVote}
                         onRoomDelete={this.deleteRoom}
                     />

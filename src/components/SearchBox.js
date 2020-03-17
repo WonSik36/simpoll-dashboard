@@ -40,7 +40,7 @@ class SearchBox extends React.Component {
     render() {
         let _content = null;
         if(this.props.data.item.title!==null){
-            if(this.state.searchType == 'room'){
+            if(this.state.searchType === 'room'){
                 _content = <div className="search-box-content">
                                 <b>{this.props.data.item.title}</b><br/>
                                 <b>방장:</b> {this.props.data.item.master_nickname}<br/>
