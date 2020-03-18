@@ -70,9 +70,9 @@ class VoteModal extends React.Component {
     deleteOptions(e){
         e.preventDefault();
         let idx = e.currentTarget.dataset.idx;
-        let _options = this.state.options.splice(idx,1);
+        this.state.options.splice(idx,1);
         this.setState({
-            options: _options
+            options: this.state.options
         });
     }
 
