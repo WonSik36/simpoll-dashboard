@@ -59,7 +59,7 @@ class App extends React.Component {
         this.getUserInfo();
 
         // get room list from server
-        this.getRoomList(true);
+        // this.getRoomList(true);
     }
 
     fetchTemplate(url, loadingState, callback){
@@ -90,20 +90,23 @@ class App extends React.Component {
     }
 
     getUserInfo(){
-        this.fetchTemplate("/user.json",null,
+        this.fetchTemplate("index.php/api/user",null,
             function(data){
                 this.setState({
                     user: data
                 });
+
+                this.getRoomList(true);
+
             }.bind(this));
     }
 
     getRoomList(isAudience){
         let url;
         if(isAudience)
-            url = "/roomList.json";
+            url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=audience";
         else
-            url = "/roomList.json";
+            url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=audience";
 
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
         this.fetchTemplate(url,{roomList:_roomList},
