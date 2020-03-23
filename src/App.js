@@ -106,7 +106,7 @@ class App extends React.Component {
         if(isAudience)
             url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=audience";
         else
-            url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=audience";
+            url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=speacker";
 
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
         this.fetchTemplate(url,{roomList:_roomList},
@@ -175,12 +175,12 @@ class App extends React.Component {
                 items: []
             }
         };
-        
+
         let url;
         if(isAudience){
-            url = "voteList.json";
+            url = "/index.php/api/room/"+sid+"/vote?userId=1&persontype=audience";
         }else{
-            url = "voteListSpeacker.json";
+            url = "index.php/api/room/"+sid+"/vote?userId=1&persontype=speacker";
         }
 
         this.fetchTemplate(url,loadingState,
@@ -196,7 +196,7 @@ class App extends React.Component {
 
                 /* update already voted to result */
                 if(isAudience)
-                    this.getVoteResult(0,true);
+                    this.getVoteResult(0,true);//청중이든 강연자든 결과를받아오기
             }.bind(this));
     }
 
@@ -286,7 +286,7 @@ class App extends React.Component {
             }).then(function(json){
                 // this.parseResponse
             }.bind(this))
-            
+
         this.changePersonType(true);
     }
 
@@ -326,18 +326,18 @@ class App extends React.Component {
     render() {
         let _main = null;
         if(this.state.personType == 'audience'){
-            _main = <MainAudience 
-                        room-list-data={this.state.roomList} 
+            _main = <MainAudience
+                        room-list-data={this.state.roomList}
                         onRoomClick={this.updateVoteList}
-                        vote-list-data={this.state.voteList} 
+                        vote-list-data={this.state.voteList}
                         onVoteSubmit={this.submitVote}
                         onUpdateChoice={this.updateChoice}
                     />;
         }else{
-            _main = <MainSpeacker 
-                        room-list-data={this.state.roomList} 
+            _main = <MainSpeacker
+                        room-list-data={this.state.roomList}
                         onRoomClick={this.updateVoteList}
-                        vote-list-data={this.state.voteList} 
+                        vote-list-data={this.state.voteList}
                         onVoteSubmit={this.submitVote}
                         onVoteCreate={this.createVote}
                         onRoomCreate={this.createRoom}
@@ -358,7 +358,7 @@ class App extends React.Component {
                     </Col>
                 </Row>
                 <ModeButton personType={this.state.personType} onPersonTypeChange={this.changePersonType} />
-                
+
                 <Row className="m-2">
                     {_main}
                 </Row>

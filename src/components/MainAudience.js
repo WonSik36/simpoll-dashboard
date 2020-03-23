@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
-import VoteList from './VoteList';
+import GroupList from './GroupList';
 import RoomList from './RoomList';
 import './style/Main.css';
 
@@ -11,15 +11,15 @@ class MainAudience extends React.Component {
                 <Row>
                     <Col sm={4}>
                         <h3>Room</h3>
-                        <RoomList 
-                            data={this.props['room-list-data']} 
+                        <RoomList
+                            data={this.props['room-list-data']}
                             onRoomClick={this.props.onRoomClick}
                             isAudience={true}/>
                     </Col>
                     <Col sm={8}>
                         <h3>Simpoll</h3>
-                        <VoteList 
-                            data={this.props['vote-list-data']} 
+                        <GroupList
+                            data={this.props['vote-list-data']}
                             onVoteSubmit={this.props['onVoteSubmit']}
                             isAudience={true}
                             onUpdateChoice={this.props.onUpdateChoice}
@@ -28,7 +28,7 @@ class MainAudience extends React.Component {
                 </Row>
             </Container>
         )
-    }   
+    }
 }
 
 export default MainAudience;
