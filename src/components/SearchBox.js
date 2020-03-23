@@ -50,8 +50,7 @@ class SearchBox extends React.Component {
             }else{
                 _content = <div className="search-box-content">
                                 <b>{this.props.data.item.title}</b><br/>
-                                <b>개설자:</b> {this.props.data.item.cur_name}<br/>
-                                <b>참여인원:</b> {this.props.data.item.part_num}<br/>
+                                <b>개설자:</b> {this.props.data.item.user_nickname}<br/>
                             <Button href="#">Simpoll 참여</Button>
                         </div>;
             }

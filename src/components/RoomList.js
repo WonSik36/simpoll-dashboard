@@ -17,7 +17,7 @@ class RoomList extends React.Component {
 
     onRoomClick(e){
         e.preventDefault();
-        this.props.onRoomClick(e.currentTarget.dataset.sid);
+        this.props.onRoomClick(e.currentTarget.dataset.sid,this.props.isAudience);
     }
 
     render() {

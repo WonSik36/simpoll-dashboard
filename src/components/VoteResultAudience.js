@@ -49,7 +49,7 @@ class VoteResultAudience extends React.Component {
     onUpdateChoice(e){
         e.preventDefault();
         let choiceId = e.currentTarget.choice_id.value;
-        let contentsNumber = e.currentTarget.contents_number.value;
+        let contentsNumber = e.currentTarget.choice_no.value;
         let idx = this.props.idx;
         this.props.onUpdateChoice(choiceId, contentsNumber, idx);
     }
@@ -59,7 +59,7 @@ class VoteResultAudience extends React.Component {
             return null;
         }
 
-        this.state.choice = this.props.data.result.contents_number;
+        this.state.choice = this.props.data.result.choice_no;
 
         let _arrow;
         if(this.state.open)
@@ -94,7 +94,7 @@ class VoteResultAudience extends React.Component {
 
             case 2:
                 let _choices = [];
-                let _choiceList = this.props.data.contents.split('|')
+                let _choiceList = this.props.data.choices.split('|')
                 for(let i=0;i<_choiceList.length;i++){
                     _choices.push(
                         <Form.Check 

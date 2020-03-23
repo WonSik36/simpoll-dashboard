@@ -145,18 +145,20 @@ class App extends React.Component {
 
         let url = "/index.php/api/";
         if(searchType == "room"){
-            url += "room_";
+            url += "room/";
         }else{
-            url += "vote_"
+            url += "group/";
         }
+
+        url += searchWord;
 
         if(isNaN(searchWord)){
-            url += "url/"
+            url += "?type=url"
         }else{
-            url += "page/"
+            url += "?type=id"
         }
 
-        this.fetchTemplate("/search.json", loadingState,
+        this.fetchTemplate(url, loadingState,
             function(data){
                 this.setState({
                     searchResult:{
@@ -175,12 +177,11 @@ class App extends React.Component {
                 items: []
             }
         };
-
         let url;
         if(isAudience){
-            url = "/index.php/api/room/"+sid+"/vote?userId=1&persontype=audience";
+            url = "/index.php/api/room/"+sid+"/vote?userId="+this.state.user.sid+"&persontype=audience";
         }else{
-            url = "index.php/api/room/"+sid+"/vote?userId=1&persontype=speacker";
+            url = "/index.php/api/room/"+sid+"/vote?userId="+this.state.user.sid+"&persontype=speacker";
         }
 
         this.fetchTemplate(url,loadingState,
@@ -194,15 +195,13 @@ class App extends React.Component {
                     }
                 });
 
-                /* update already voted to result */
-                if(isAudience)
-                    this.getVoteResult(0,true);//청중이든 강연자든 결과를받아오기
+                this.getVoteResult(0,true,isAudience);//청중이든 강연자든 결과를받아오기
             }.bind(this));
     }
 
     // get vote result
     // this will be called vote in vote list was voted by user
-    getVoteResult(idx, continuous){
+    getVoteResult(idx, continuous, isAudience){
         if(idx >= this.state.voteList.items.length)
             return;
 
@@ -211,15 +210,23 @@ class App extends React.Component {
 
         // not voted
         if(_voted === false && _isDeadlinePass === false){
-            this.getVoteResult(idx+1, continuous);
+            this.getVoteResult(idx+1, continuous, isAudience);
             return;
         }
 
         // get vote sid
-        let sid = this.state.voteList.items[idx].sid;
+        let voteId = this.state.voteList.items[idx].vote_id;
+
+        // set url
+        let url = null;
+        if(isAudience){
+            url = "/index.php/api/choice?voteId="+voteId+"&userId="+this.state.user.sid+"&persontype=audience";
+        }else{
+            url = "/index.php/api/choice?voteId="+voteId+"&userId="+this.state.user.sid+"&persontype=speacker";
+        }
 
         // get vote result
-        this.fetchTemplate("/voteResult.json",null,
+        this.fetchTemplate(url,null,
             function(data){
                 let _newVote = Object.assign(this.state.voteList.items[idx],{result: data});
                 this.state.voteList.items[idx] = _newVote;
@@ -228,7 +235,7 @@ class App extends React.Component {
                 });
 
                 if(continuous)
-                    this.getVoteResult(idx+1,continuous);
+                    this.getVoteResult(idx+1,continuous,isAudience);
             }.bind(this));
     }
 
@@ -245,7 +252,7 @@ class App extends React.Component {
         this.fetchTemplate("/voteResult.json",null,
             function(data){
                 this.state.voteList.items[idx].voted = true;
-                this.getVoteResult(idx,false);
+                this.getVoteResult(idx,false,this.state.personType=="audience");
             }.bind(this));
     }
 

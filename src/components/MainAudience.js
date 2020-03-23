@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
-import GroupList from './GroupList';
+import VoteList from './VoteList';
 import RoomList from './RoomList';
 import './style/Main.css';
 
@@ -18,7 +18,7 @@ class MainAudience extends React.Component {
                     </Col>
                     <Col sm={8}>
                         <h3>Simpoll</h3>
-                        <GroupList
+                        <VoteList
                             data={this.props['vote-list-data']}
                             onVoteSubmit={this.props['onVoteSubmit']}
                             isAudience={true}

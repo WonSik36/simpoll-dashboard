@@ -33,7 +33,7 @@ class VoteChoice extends React.Component {
 
     render() {
         let _choices = [];
-        let _choiceList = this.props.data.contents.split('|')
+        let _choiceList = this.props.data.choices.split('|')
         for(let i=0;i<_choiceList.length;i++){
             _choices.push(
                 <Form.Check 
