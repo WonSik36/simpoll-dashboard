@@ -94,8 +94,12 @@ class VoteChoice extends React.Component {
                             <Col xs={1}></Col>
                             <Col xs={10} className="p-0">
                                 <Row>
-                                    <Col xs={12} md={6}>제목: {this.props.data.title}</Col>
-                                    <Col xs={12} md={6}>마감기한: {this.props.data.deadline}</Col>
+                                    <Col xs={12}>
+                                        <b>제목</b>: {this.props.data.vote_title} <b>심폴ID</b>: {this.props.data.group_id} <b>URL</b>: {this.props.data.url_name}
+                                    </Col>
+                                    <Col xs={12}>
+                                        <b>마감기한</b>: {this.props.data.deadline} 
+                                    </Col>
                                 </Row>
                             </Col>
                             <Col xs={1}>

@@ -59,9 +59,10 @@ class Room extends React.Component {
         return ( 
             <>
                 {_deleteBtn}
-                <h4>{this.props.data.title}</h4>
-                <h5>방장: {this.props.data.master_nickname}</h5>
-                <h5>참여인원: {this.props.data.part_num}명</h5>
+                <h5>{this.props.data.title}</h5>
+                <h6>방장: {this.props.data.master_nickname}</h6>
+                <h6>참여인원: {this.props.data.part_num}명</h6>
+                <h6>방 ID: {this.props.data.sid} URL: {this.props.data.url_name}</h6>
             </>
         )
     }   

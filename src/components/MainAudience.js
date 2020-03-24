@@ -23,6 +23,7 @@ class MainAudience extends React.Component {
                             onVoteSubmit={this.props['onVoteSubmit']}
                             isAudience={true}
                             onUpdateChoice={this.props.onUpdateChoice}
+                            onVoteRefresh={this.props.onVoteRefresh}
                         />
                     </Col>
                 </Row>

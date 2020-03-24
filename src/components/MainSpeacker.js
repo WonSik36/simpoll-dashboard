@@ -31,7 +31,8 @@ class MainSpeacker extends React.Component {
                             data={this.props['vote-list-data']}
                             onVoteSubmit={this.props['onVoteSubmit']}
                             isAudience={false}
-                            onVoteDelete={this.props.onVoteDelete}/>
+                            onVoteDelete={this.props.onVoteDelete}
+                            onVoteRefresh={this.props.onVoteRefresh}/>
                     </Col>
                 </Row>
             </Container>

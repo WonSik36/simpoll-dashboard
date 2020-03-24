@@ -15,14 +15,22 @@ class VoteList extends React.Component {
             if(!this.props.isAudience){
                 for(let i=0;i<_voteList.length;i++){
                     _contents.push(
-                        <VoteResultSpeacker data={_voteList[i]} key={(i+1)} idx={i} onVoteDelete={this.props.onVoteDelete}/>
+                        <VoteResultSpeacker 
+                            data={_voteList[i]} 
+                            key={(i+1)} idx={i} 
+                            onVoteDelete={this.props.onVoteDelete}
+                            onVoteRefresh={this.props.onVoteRefresh}/>
                     ) 
                 }
             }else{
                 for(let i=0;i<_voteList.length;i++){
                     if(_voteList[i].voted || _voteList[i].isDeadlinePass){
                         _contents.push(
-                            <VoteResultAudience data={_voteList[i]} key={(i+1)} idx={i} onUpdateChoice={this.props.onUpdateChoice}/>
+                            <VoteResultAudience 
+                                data={_voteList[i]} 
+                                key={(i+1)} idx={i} 
+                                onUpdateChoice={this.props.onUpdateChoice}
+                                onVoteRefresh={this.props.onVoteRefresh}/>
                         ) 
                     }else{
                         _contents.push(

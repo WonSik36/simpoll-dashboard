@@ -209,7 +209,7 @@ class App extends React.Component {
         let _isDeadlinePass = this.state.voteList.items[idx].isDeadlinePass;
 
         // not voted
-        if(_voted === false && _isDeadlinePass === false){
+        if(isAudience && _voted === false && _isDeadlinePass === false){
             this.getVoteResult(idx+1, continuous, isAudience);
             return;
         }
@@ -362,6 +362,7 @@ class App extends React.Component {
                         vote-list-data={this.state.voteList}
                         onVoteSubmit={this.submitVote}
                         onUpdateChoice={this.updateChoice}
+                        onVoteRefresh={this.getVoteResult}
                     />;
         }else{
             _main = <MainSpeacker
@@ -373,6 +374,7 @@ class App extends React.Component {
                         onRoomCreate={this.createRoom}
                         onVoteDelete={this.deleteVote}
                         onRoomDelete={this.deleteRoom}
+                        onVoteRefresh={this.getVoteResult}
                     />
         }
 

@@ -17,6 +17,7 @@ class VoteResultSpeacker extends React.Component {
         this.disableLeftButton = this.disableLeftButton.bind(this);
         this.disableRightButton = this.disableRightButton.bind(this);
         this.onVoteDelete = this.onVoteDelete.bind(this);
+        this.onVoteRefresh = this.onVoteRefresh.bind(this);
     }
 
     setOpen(_open){
@@ -42,6 +43,11 @@ class VoteResultSpeacker extends React.Component {
     onVoteDelete(e){
         e.preventDefault();
         this.props.onVoteDelete(this.props.data.sid);
+    }
+
+    onVoteRefresh(e){
+        e.preventDefault();
+        this.props.onVoteRefresh(this.props.idx,false,false);
     }
 
     render() {
@@ -141,14 +147,28 @@ class VoteResultSpeacker extends React.Component {
                                 {_mark}
                                 
                             </Col>
-                            <Col xs={10} className="p-0">
+                            <Col xs={9} className="p-0">
                                 <Row>
-                                    <Col xs={12} md={6}>제목: {this.props.data.title}</Col>
-                                    <Col xs={12} md={6}>마감기한: {this.props.data.deadline}</Col>
+                                    <Col xs={12}>
+                                        <b>제목</b>: {this.props.data.vote_title} <b>심폴ID</b>: {this.props.data.group_id} <b>URL</b>: {this.props.data.url_name}
+                                    </Col>
+                                    <Col xs={12}>
+                                        <b>마감기한</b>: {this.props.data.deadline} <b>참여인원</b>: {this.props.data.result.part_num} 명
+                                    </Col>
                                     <Col xs={12}>
                                         <VoteResultProgress data={this.props.data.result}/>
                                     </Col>
                                 </Row>
+                            </Col>
+                            <Col xs={1}>
+                                <Button 
+                                    variant="light" className="p-0 float-right"
+                                    onClick={this.onVoteRefresh}
+                                >
+                                    <span className="icon-refresh">
+                                        <i className="fas fa-redo-alt"></i>
+                                    </span>
+                                </Button>
                             </Col>
                             <Col xs={1}>
                                 <Button 
