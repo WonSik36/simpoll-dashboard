@@ -85,7 +85,7 @@ class VoteModal extends React.Component {
             _choices += e.currentTarget.choices[i].value;
             _choices += "|";
         }
-        _choices.substring(0,_choices.length-1);
+        _choices = _choices.substring(0,_choices.length-1);
 
         let _deadline = e.currentTarget.vote_end_date.value+" "+e.currentTarget.vote_end_time.value;
         let _is_comment_enable = '0';
