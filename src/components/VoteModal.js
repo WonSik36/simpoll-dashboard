@@ -80,7 +80,36 @@ class VoteModal extends React.Component {
         e.preventDefault();
         this.handleClose();
 
-        let vote = null;
+        let _choices ="";
+        for(let i=0;i<e.currentTarget.choices.length;i++){
+            _choices += e.currentTarget.choices[i].value;
+            _choices += "|";
+        }
+        _choices.substring(0,_choices.length-1);
+
+        let _deadline = e.currentTarget.vote_end_date.value+" "+e.currentTarget.vote_end_time.value;
+        let _is_comment_enable = '0';
+        if(e.currentTarget.comment_check.checked)
+            _is_comment_enable = '1';
+        let _is_anonymous = '0';
+        if(e.currentTarget.anonymous_check.checked)
+            _is_anonymous = '1';
+        let _vote_type = '0';
+        if(e.currentTarget.vote_type.checked)
+            _vote_type = '1';
+
+        let vote = {
+            vote_title: e.currentTarget.title.value,
+            choices: _choices,
+            vote_type: _vote_type,
+
+            url_name: e.currentTarget.title.url_name,
+            room_id: this.props.currentRoomId,
+            deadline : _deadline,
+            is_anonymous: _is_anonymous,
+            is_comment_enable: _is_comment_enable,
+            part_auth: e.currentTarget.part_auth.value
+        };
         this.props.onVoteCreate(vote);
     }
 
@@ -100,6 +129,7 @@ class VoteModal extends React.Component {
             _options.push(
                 <InputGroup className="mb-3" key={i+1}>
                     <FormControl 
+                        name="choices"
                         value={this.state.options[i]} 
                         onChange={this.onChangeOptions}
                         data-idx={i}

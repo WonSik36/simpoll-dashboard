@@ -35,7 +35,8 @@ class App extends React.Component {
             alertList: {
                 isLoading: false,
                 items: []
-            }
+            },
+            currentRoomId: null
         }
 
         this.fetchTemplate = this.fetchTemplate.bind(this);
@@ -115,10 +116,12 @@ class App extends React.Component {
                     roomList:{
                         isLoading: false,
                         items: data
-                    }
+                    },
                 });
-                if(data.length > 0)
+
+                if(data.length > 0){
                     this.updateVoteList(data[0].sid, isAudience);
+                }
             }.bind(this));
     }
 
@@ -171,6 +174,8 @@ class App extends React.Component {
 
     // update vote list
     updateVoteList(sid, isAudience){
+        this.setState({currentRoomId: sid});
+
         let loadingState = {
             voteList:{
                 isLoading: true,
@@ -261,27 +266,61 @@ class App extends React.Component {
     }
 
     createVote(vote){
-        alert("심폴이 생성되었습니다!");
-        //fetch
-        //update vote list
+        vote.user_id = this.state.user.sid;
+        vote.user_nickname = this.state.user.nickname;
+
+        let requestBody = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(vote)
+        };
+
+        this.fetchTemplate("/index.php/api/group",requestBody,null,
+            function(data){
+                this.updateVoteList(this.state.currentRoomId, false);
+            }.bind(this));
     }
 
     createRoom(room){
-        alert("방이 생성되었습니다!");
-        //fetch
-        //update vote list
+        room.master = this.state.user.sid;
+        room.master_nickname = this.state.user.nickname;
+
+        let requestBody = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(room)
+        };
+
+        this.fetchTemplate("/index.php/api/room",requestBody,null,
+            function(data){
+                this.getRoomList(false);
+            }.bind(this));
     }
 
     deleteVote(voteId){
-        alert("Simpoll이 삭제되었습니다!");
-        //fetch
-        //update vote list
+        let requestBody = {
+            method: 'DELETE'
+        };
+
+        this.fetchTemplate("/index.php/api/vote/"+voteId,requestBody,null,
+            function(data){
+                this.updateVoteList(this.state.currentRoomId,false);
+            }.bind(this));
     }
 
     deleteRoom(roomId){
-        alert("Room이 삭제되었습니다!");
-        //fetch
-        //update room list
+        let requestBody = {
+            method: 'DELETE'
+        };
+
+        this.fetchTemplate("/index.php/api/room/"+roomId,requestBody,null,
+            function(data){
+                this.getRoomList(false);
+            }.bind(this));
     }
 
     updateChoice(choice){
@@ -375,6 +414,7 @@ class App extends React.Component {
                         onVoteDelete={this.deleteVote}
                         onRoomDelete={this.deleteRoom}
                         onVoteRefresh={this.getVoteResult}
+                        currentRoomId={this.state.currentRoomId}
                     />
         }
 

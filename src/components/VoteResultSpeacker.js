@@ -42,7 +42,7 @@ class VoteResultSpeacker extends React.Component {
 
     onVoteDelete(e){
         e.preventDefault();
-        this.props.onVoteDelete(this.props.data.sid);
+        this.props.onVoteDelete(this.props.data.vote_id);
     }
 
     onVoteRefresh(e){

@@ -25,7 +25,7 @@ class MainSpeacker extends React.Component {
                     <Col sm={8}>
                         <div className="m-2">
                             <h3 className="inline">Simpoll</h3>
-                            <VoteModal onVoteCreate={this.props.onVoteCreate}/>
+                            <VoteModal onVoteCreate={this.props.onVoteCreate} currentRoomId={this.props.currentRoomId}/>
                         </div>
                         <VoteList
                             data={this.props['vote-list-data']}
