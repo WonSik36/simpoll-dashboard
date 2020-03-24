@@ -91,7 +91,7 @@ class App extends React.Component {
     }
 
     getUserInfo(){
-        this.fetchTemplate("index.php/api/user",null,null,
+        this.fetchTemplate("/index.php/api/user",null,null,
             function(data){
                 this.setState({
                     user: data
