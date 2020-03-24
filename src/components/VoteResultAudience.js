@@ -10,26 +10,19 @@ class VoteResultAudience extends React.Component {
         super(props);
         this.state = {
             open: false,
-            choice: 1,
             page: 1
         };
         this.setOpen = this.setOpen.bind(this);
-        this.onChoiceChange = this.onChoiceChange.bind(this);
         this.disableLeftButton = this.disableLeftButton.bind(this);
         this.disableRightButton = this.disableRightButton.bind(this);
         this.onUpdateChoice = this.onUpdateChoice.bind(this);
+        this.isChecked = this.isChecked.bind(this);
     }
 
     setOpen(_open){
         this.setState({
             open: _open
         })
-    }
-
-    onChoiceChange(e){
-        this.setState({
-            choice: e.currentTarget.value
-        });
     }
 
     disableLeftButton(){
@@ -48,18 +41,41 @@ class VoteResultAudience extends React.Component {
 
     onUpdateChoice(e){
         e.preventDefault();
+
         let choiceId = e.currentTarget.choice_id.value;
-        let contentsNumber = e.currentTarget.choice_no.value;
+        let choice_no = "";
+        for(let i=0;i<e.currentTarget['contents_number'].length;i++){
+            if(e.currentTarget['contents_number'][i].checked){
+                choice_no += ((i+1)+"|");
+            }
+        }
+        choice_no = choice_no.substring(0,choice_no.length-1);
+
         let idx = this.props.idx;
-        this.props.onUpdateChoice(choiceId, contentsNumber, idx);
+        let choice = {
+            "choice_id": choiceId,
+            "choice_no": choice_no,
+            "idx":idx
+        };
+        this.props.onUpdateChoice(choice);
+    }
+
+    isChecked(userchoice, idx){
+        idx++;
+        idx += "";
+
+        for(let i=0;i<userchoice.length;i++){
+            if(userchoice[i] === idx)
+                return true;
+        }
+
+        return false;
     }
 
     render() {
         if(this.props.data.result === undefined){
             return null;
         }
-
-        this.state.choice = this.props.data.result.choice_no;
 
         let _arrow;
         if(this.state.open)
@@ -94,19 +110,41 @@ class VoteResultAudience extends React.Component {
 
             case 2:
                 let _choices = [];
+                
+                let _userchoice = [];
+                if(this.props.data.result['choice_no'] !== null)
+                    _userchoice = this.props.data.result['choice_no'].split('|');
+
                 let _choiceList = this.props.data.choices.split('|')
-                for(let i=0;i<_choiceList.length;i++){
-                    _choices.push(
-                        <Form.Check 
-                            key={(i+1)}
-                            label={_choiceList[i]} 
-                            type='radio' 
-                            id={'vote-'+this.props.data.sid+'-radio-'+(i+1)} 
-                            name="contents_number" value={(i+1)}
-                            onChange={this.onChoiceChange}
-                            checked={this.state.choice == (i+1)}
-                            disabled={this.props.data.isDeadlinePass}/>
-                    )
+                if(this.props.data.vote_type === "0"){
+                    for(let i=0;i<_choiceList.length;i++){
+                        let _checked = this.isChecked(_userchoice,i);
+                        _choices.push(
+                            <Form.Check 
+                                key={(i+1)}
+                                label={_choiceList[i]} 
+                                type='radio' 
+                                id={'vote-'+this.props.data.sid+'-radio-'+(i+1)} 
+                                name="contents_number" value={(i+1)}
+                                defaultChecked={_checked}
+                                disabled={this.props.data.isDeadlinePass}/>
+                        )
+                    }
+                }else if(this.props.data.vote_type === "1"){
+                    for(let i=0;i<_choiceList.length;i++){
+                        let _checked = this.isChecked(_userchoice,i);
+                        _choices.push(
+                            <Form.Check 
+                                key={(i+1)}
+                                label={_choiceList[i]} 
+                                type='checkbox' 
+                                id={'vote-'+this.props.data.sid+'-checkbox-'+(i+1)} 
+                                name="contents_number" value={(i+1)}
+                                defaultChecked={_checked}
+                                disabled={this.props.data.isDeadlinePass}/>
+                        )
+                    }
+
                 }
 
                 let _badge = null;

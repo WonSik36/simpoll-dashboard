@@ -62,14 +62,14 @@ class App extends React.Component {
         // this.getRoomList(true);
     }
 
-    fetchTemplate(url, loadingState, callback){
+    fetchTemplate(url, requestBody, loadingState, callback){
         let oldState;
         if(loadingState !== null){
             oldState = this.state;
             this.setState(loadingState);
         }
 
-        fetch(url)
+        fetch(url,requestBody)
             .then((res)=>{
                 return res.json();
             }).then((json)=>{
@@ -90,7 +90,7 @@ class App extends React.Component {
     }
 
     getUserInfo(){
-        this.fetchTemplate("index.php/api/user",null,
+        this.fetchTemplate("index.php/api/user",null,null,
             function(data){
                 this.setState({
                     user: data
@@ -109,7 +109,7 @@ class App extends React.Component {
             url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=speacker";
 
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
-        this.fetchTemplate(url,{roomList:_roomList},
+        this.fetchTemplate(url,null,{roomList:_roomList},
             function(data){
                 this.setState({
                     roomList:{
@@ -158,7 +158,7 @@ class App extends React.Component {
             url += "?type=id"
         }
 
-        this.fetchTemplate(url, loadingState,
+        this.fetchTemplate(url, null,loadingState,
             function(data){
                 this.setState({
                     searchResult:{
@@ -184,7 +184,7 @@ class App extends React.Component {
             url = "/index.php/api/room/"+sid+"/vote?userId="+this.state.user.sid+"&persontype=speacker";
         }
 
-        this.fetchTemplate(url,loadingState,
+        this.fetchTemplate(url,null,loadingState,
             function(data){
 
                 data = this.checkDeadlineAndSortVoteList(data);
@@ -226,7 +226,7 @@ class App extends React.Component {
         }
 
         // get vote result
-        this.fetchTemplate(url,null,
+        this.fetchTemplate(url,null,null,
             function(data){
                 let _newVote = Object.assign(this.state.voteList.items[idx],{result: data});
                 this.state.voteList.items[idx] = _newVote;
@@ -240,19 +240,23 @@ class App extends React.Component {
     }
 
     // this will be called when vote is submitted
-    submitVote(e){
-        let contents_number = e.currentTarget['contents_number'].value;
-        let vote_id = e.currentTarget['vote_id'].value
-        let idx = e.currentTarget['idx'].value;
-        let resBody = {
-            "contents_number": contents_number,
-            "vote_id": vote_id
+    submitVote(choice){
+        let idx = choice.idx;
+        choice.user_id = this.state.user.sid;
+
+        let requestBody = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(choice)
         }
 
-        this.fetchTemplate("/voteResult.json",null,
+        this.fetchTemplate("/index.php/api/choice",requestBody,null,
             function(data){
-                this.state.voteList.items[idx].voted = true;
-                this.getVoteResult(idx,false,this.state.personType=="audience");
+                this.state.voteList.items[idx].voted=true;
+                this.setState({voteList: this.state.voteList});
+                this.getVoteResult(idx,false,this.state.personType==="audience");
             }.bind(this));
     }
 
@@ -280,10 +284,24 @@ class App extends React.Component {
         //update room list
     }
 
-    updateChoice(choiceId, contentsNumber, idx){
-        alert("선택이 수정되었습니다!");
-        //fetch
-        //update vote by getVoteResult
+    updateChoice(choice){
+        let idx = choice.idx;
+        choice.user_id = this.state.user.sid;
+
+        let requestBody = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(choice)
+        }
+
+        let url = "/index.php/api/choice/"+choice.choice_id;
+
+        this.fetchTemplate(url,requestBody,null,
+            function(data){
+                this.getVoteResult(idx,false,this.state.personType==="audience");
+            }.bind(this));
     }
 
     participateRoom(roomId){
