@@ -305,14 +305,19 @@ class App extends React.Component {
     }
 
     participateRoom(roomId){
-        fetch("url")
-            .then(function(res){
-                return res.json();
-            }).then(function(json){
-                // this.parseResponse
-            }.bind(this))
+        let url = "/index.php/api/room/"+roomId+"/user";
+        let requestBody = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({user_id:this.state.user.sid})
+        };
 
-        this.changePersonType(true);
+        this.fetchTemplate(url,requestBody,null,
+            function(data){
+                this.changePersonType(true);
+            }.bind(this));
     }
 
     checkDeadlineAndSortVoteList(voteList){

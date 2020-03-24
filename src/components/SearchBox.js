@@ -11,6 +11,7 @@ class SearchBox extends React.Component {
         }
         this.onSearchTypeChange = this.onSearchTypeChange.bind(this);
         this.onSearchSubmit = this.onSearchSubmit.bind(this);
+        this.onAddRoom = this.onAddRoom.bind(this);
     }
 
     shouldComponentUpdate(newProps, newState){
@@ -33,7 +34,7 @@ class SearchBox extends React.Component {
     }
 
     onAddRoom(e){
-        e.preventDefault();        
+        e.preventDefault();    
         this.props.addRoom(this.props.data.item.sid);
     }
 
@@ -45,7 +46,7 @@ class SearchBox extends React.Component {
                                 <b>{this.props.data.item.title}</b><br/>
                                 <b>방장:</b> {this.props.data.item.master_nickname}<br/>
                                 <b>참여인원:</b> {this.props.data.item.part_num}<br/>
-                            <Button onClick={this.props.addRoom}>Room 참여</Button>
+                            <Button onClick={this.onAddRoom}>Room 참여</Button>
                         </div>;
             }else{
                 _content = <div className="search-box-content">
