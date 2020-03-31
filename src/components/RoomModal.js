@@ -47,7 +47,7 @@ class RoomModal extends React.Component {
         let room = {
             title:_title,
             url_name: _urlName,
-            vote_create_auth: _voteCreateAuth,
+            poll_create_auth: _voteCreateAuth,
             user_name_type: _userNameType
         }
         this.props.onRoomCreate(room);

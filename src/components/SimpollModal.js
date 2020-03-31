@@ -137,6 +137,7 @@ class SimpolllModal extends React.Component {
     }
 
     onSimpollCreate(e){
+        debugger;
         e.preventDefault();
         this.handleClose();
 
@@ -150,7 +151,7 @@ class SimpolllModal extends React.Component {
 
         let simpolll = {
             title: e.currentTarget.title.value,
-            url_name: e.currentTarget.title.url_name,
+            url_name: e.currentTarget.url_name.value,
             room_id: this.props.currentRoomId,
             deadline : _deadline,
             is_anonymous: _is_anonymous,
@@ -188,7 +189,6 @@ class SimpolllModal extends React.Component {
                 <FormGroup key={j}>
                     <Form.Label>문항 내용</Form.Label>
                     <Form.Control 
-                        name="title" 
                         type="text" 
                         data-qidx={j}
                         placeholder="문항 내용을 입력하세요." 

@@ -75,7 +75,7 @@ class SimpollResultSpeaker extends React.Component {
                     let _label = [];
 
                     for(let j=0;j<this.props.data.questions[i].options.length;j++){
-                        _count[j] = this.props.data.questions[i].options[j].option_user_id.length;
+                        _count[j] = this.props.data.questions[i].options[j].count;
                         _label[j] = this.props.data.questions[i].options[j].option_name;
                     }
 
@@ -101,6 +101,7 @@ class SimpollResultSpeaker extends React.Component {
                 break;
 
             case 2:
+                let _key = 1;
                 for(let j=0;j<this.props.data.questions.length;j++){
                     let _choices=[];
                     for(let i=0;i<this.props.data.questions[j].options.length;i++){
@@ -111,7 +112,7 @@ class SimpollResultSpeaker extends React.Component {
                                 str += ", ";
                         }
                         _choices.push(
-                            <tr key={(i+1)}>
+                            <tr key={_key++}>
                                 <td key="1">{this.props.data.questions[j].options[i].option_name}</td>
                                 <td key="2">{this.props.data.questions[j].options[i].count} 명</td>
                                 <td key="3">{str}</td>
@@ -119,8 +120,8 @@ class SimpollResultSpeaker extends React.Component {
                         );
                     }
 
-                    _content.push(<p>{this.props.data.questions[j].question_title}</p>)
-                    _content.push(<Table striped bordered hover key={j}>
+                    _content.push(<p key={_key++}>{this.props.data.questions[j].question_title}</p>)
+                    _content.push(<Table striped bordered hover key={_key++}>
                                 <thead>
                                     <tr>
                                         <th>Question</th>

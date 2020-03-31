@@ -194,14 +194,23 @@ class App extends React.Component {
 
         this.fetchTemplate(url,null,loadingState,
             function(data){
-                data = this.parseSimpollList(data);
-                data = this.sortSimpollList(data);
-                this.setState({
-                    simpollList:{
-                        isLoading: false,
-                        items: data
-                    }
-                });
+                if(data.length> 0){
+                    data = this.parseSimpollList(data);
+                    data = this.sortSimpollList(data);
+                    this.setState({
+                        simpollList:{
+                            isLoading: false,
+                            items: data
+                        }
+                    });
+                }else{
+                    this.setState({
+                        simpollList:{
+                            isLoading: false,
+                            items: []
+                        }
+                    });
+                }
 
             }.bind(this));
     }
@@ -218,6 +227,7 @@ class App extends React.Component {
         // get simpoll result
         this.fetchTemplate(url,null,null,
             function(data){
+                
                 data = this.parseSimpoll(data);
                 this.state.simpollList.items[idx] = data;
                 let _simpollList = this.sortSimpollList(this.state.simpollList.items);
@@ -236,13 +246,15 @@ class App extends React.Component {
     */
     submitSimpoll(options){
         let idx = options.idx;
-
+        let _option_id = {
+            option_id: options.data
+        }
         let requestBody = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(options.data)
+            body: JSON.stringify(_option_id)
         }
 
         this.fetchTemplate("/index.php/api/option",requestBody,null,
@@ -280,9 +292,7 @@ class App extends React.Component {
         }
     */
     createSimpoll(simpoll){
-        simpoll.user_id = this.state.user.sid;
-        simpoll.user_nickname = this.state.user.nickname;
-
+        debugger;
         let requestBody = {
             method: 'POST',
             headers: {
@@ -479,7 +489,7 @@ class App extends React.Component {
                 option_id: question[i].option_id,
                 option_user_id: question[i].option_user_id.split('|'),
                 option_user_nickname: question[i].option_user_nickname.split('|'),
-                count: question[i].count
+                count: question[i].option_count
             };
 
             if(this.state.viewmode === 'audience'){
@@ -551,8 +561,8 @@ class App extends React.Component {
                 }else if(votedOrDeadlinePassed1 && !votedOrDeadlinePassed2){
                     return 1;
                 }else{
-                    let simpollId1 = Number(s1.simpoll_id);
-                    let simpollId2 = Number(s2.simpoll_id);
+                    let simpollId1 = Number(s1.sid);
+                    let simpollId2 = Number(s2.sid);
                     if(simpollId1 < simpollId2){
                         return 1;
                     }else{
@@ -569,8 +579,8 @@ class App extends React.Component {
                 }else if(s1.isDeadlinePass && !s2.isDeadlinePass){
                     return 1;
                 }else{
-                    let simpollId1 = Number(s1.simpoll_id);
-                    let simpollId2 = Number(s2.simpoll_id);
+                    let simpollId1 = Number(s1.sid);
+                    let simpollId2 = Number(s2.sid);
                     if(simpollId1 < simpollId2){
                         return 1;
                     }else{
