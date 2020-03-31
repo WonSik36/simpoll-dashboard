@@ -227,12 +227,14 @@ class App extends React.Component {
         // get simpoll result
         this.fetchTemplate(url,null,null,
             function(data){
-                
                 data = this.parseSimpoll(data);
                 this.state.simpollList.items[idx] = data;
                 let _simpollList = this.sortSimpollList(this.state.simpollList.items);
                 this.setState({
-                    simpollList: _simpollList
+                    simpollList:{
+                        isLoading: false,
+                        items: _simpollList
+                    }
                 });
 
             }.bind(this));
@@ -292,7 +294,6 @@ class App extends React.Component {
         }
     */
     createSimpoll(simpoll){
-        debugger;
         let requestBody = {
             method: 'POST',
             headers: {
@@ -536,7 +537,7 @@ class App extends React.Component {
     */
     checkUserVoted(simpoll){
         for(let i=0;i<simpoll.length;i++){
-            let optionUserId = simpoll[i].option_user_id;
+            let optionUserId = simpoll[i].option_user_id.split('|');
             for(let j=0;j<optionUserId.length;j++){
                 if(optionUserId[j] === this.state.user.sid)
                     return true;
