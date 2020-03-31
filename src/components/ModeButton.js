@@ -5,22 +5,22 @@ import './style/ModeButton.css';
 class ModeButton extends React.Component {
     constructor(props){
         super(props);
-        this.onPersonTypeChange = this.onPersonTypeChange.bind(this);
+        this.onViewModeChange = this.onViewModeChange.bind(this);
     }
 
-    onPersonTypeChange(e){
+    onViewModeChange(e){
         e.preventDefault();
-        if(e.currentTarget.dataset.persontype == "audience"){
-            this.props.onPersonTypeChange(true);
+        if(e.currentTarget.dataset.persontype === "audience"){
+            this.props.onViewModeChange(true);
         }else{
-            this.props.onPersonTypeChange(false);
+            this.props.onViewModeChange(false);
         }
     }
 
     render(){
         let _audienceVariant, _speackerVariant;
 
-        if(this.props.personType == "audience"){
+        if(this.props.viewmode === "audience"){
             _audienceVariant = "primary";
             _speackerVariant = "light";
         }else{
@@ -30,8 +30,8 @@ class ModeButton extends React.Component {
         return (
             <ButtonToolbar>
                 <ToggleButtonGroup type="radio" name="options">
-                    <ToggleButton className="button" variant={_audienceVariant} data-persontype="audience" onClick={this.onPersonTypeChange}>참여중인 Simpoll</ToggleButton>
-                    <ToggleButton className="button" variant={_speackerVariant} data-persontype="speacker" onClick={this.onPersonTypeChange}>개설한 Simpoll</ToggleButton>
+                    <ToggleButton className="button" variant={_audienceVariant} data-persontype="audience" onClick={this.onViewModeChange}>참여중인 Simpoll</ToggleButton>
+                    <ToggleButton className="button" variant={_speackerVariant} data-persontype="speaker" onClick={this.onViewModeChange}>개설한 Simpoll</ToggleButton>
                 </ToggleButtonGroup>
             </ButtonToolbar>
         )

@@ -1,12 +1,12 @@
-import React, { Component,Fragment } from 'react';
-import {Container, Row, Col, Button} from 'react-bootstrap';
-import VoteList from './VoteList';
+import React from 'react';
+import {Container, Row, Col} from 'react-bootstrap';
+import SimpollList from './SimpollList';
 import RoomList from './RoomList';
 import RoomModal from './RoomModal';
-import VoteModal from './VoteModal';
+import SimpollModal from './SimpollModal';
 import './style/Main.css';
 
-class MainSpeacker extends React.Component {
+class MainSpeaker extends React.Component {
     render(){
         return (
             <Container className="main-container">
@@ -25,14 +25,14 @@ class MainSpeacker extends React.Component {
                     <Col sm={8}>
                         <div className="m-2">
                             <h3 className="inline">Simpoll</h3>
-                            <VoteModal onVoteCreate={this.props.onVoteCreate} currentRoomId={this.props.currentRoomId}/>
+                            <SimpollModal onSimpollCreate={this.props.onSimpollCreate} currentRoomId={this.props.currentRoomId}/>
                         </div>
-                        <VoteList
-                            data={this.props['vote-list-data']}
-                            onVoteSubmit={this.props['onVoteSubmit']}
+                        <SimpollList
+                            data={this.props['simpoll-list-data']}
+                            onSimpollSubmit={this.props['onSimpollSubmit']}
                             isAudience={false}
-                            onVoteDelete={this.props.onVoteDelete}
-                            onVoteRefresh={this.props.onVoteRefresh}/>
+                            onSimpollDelete={this.props.onSimpollDelete}
+                            onSimpollRefresh={this.props.onSimpollRefresh}/>
                     </Col>
                 </Row>
             </Container>
@@ -41,4 +41,4 @@ class MainSpeacker extends React.Component {
 
 }
 
-export default MainSpeacker;
+export default MainSpeaker;

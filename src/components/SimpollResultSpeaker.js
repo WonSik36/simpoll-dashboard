@@ -1,11 +1,11 @@
 import React from 'react';
 import {Button, Collapse, Card, Container, Row, Col, ButtonGroup, Table, Alert} from 'react-bootstrap';
 import { Doughnut } from 'react-chartjs-2';
-import './style/Vote.css';
+import './style/Simpoll.css';
 import BackgroundColorPreset from './json/chart';
-import VoteResultProgress from './VoteResultProgress';
+import SimpollResultProgress from './SimpollResultProgress';
 
-class VoteResultSpeacker extends React.Component {
+class SimpollResultSpeaker extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -16,8 +16,8 @@ class VoteResultSpeacker extends React.Component {
         this.setOpen = this.setOpen.bind(this);
         this.disableLeftButton = this.disableLeftButton.bind(this);
         this.disableRightButton = this.disableRightButton.bind(this);
-        this.onVoteDelete = this.onVoteDelete.bind(this);
-        this.onVoteRefresh = this.onVoteRefresh.bind(this);
+        this.onSimpollDelete = this.onSimpollDelete.bind(this);
+        this.onSimpollRefresh = this.onSimpollRefresh.bind(this);
     }
 
     setOpen(_open){
@@ -40,21 +40,17 @@ class VoteResultSpeacker extends React.Component {
             return false;
     }
 
-    onVoteDelete(e){
+    onSimpollDelete(e){
         e.preventDefault();
-        this.props.onVoteDelete(this.props.data.vote_id);
+        this.props.onSimpollDelete(this.props.data.sid);
     }
 
-    onVoteRefresh(e){
+    onSimpollRefresh(e){
         e.preventDefault();
-        this.props.onVoteRefresh(this.props.idx,false,false);
+        this.props.onSimpollRefresh(this.props.idx,false,false);
     }
 
     render() {
-        if(this.props.data.result === undefined){
-            return null;
-        }
-
         let _arrow;
         if(this.state.open)
             _arrow =<span className="icon-arrow">
@@ -71,54 +67,72 @@ class VoteResultSpeacker extends React.Component {
                         <i className="far fa-clock"></i>
                     </span>;
 
-        let _content = null;
+        let _content = [];
         switch(this.state.page){
             case 1:
-                let _data = {
-                    datasets:[{
-                        backgroundColor: BackgroundColorPreset,
-                        data: this.props.data.result.data
-                    }],
-                    labels: this.props.data.result.label
-                }
+                for(let i=0;i<this.props.data.questions.length;i++){
+                    let _count = [];
+                    let _label = [];
 
-                _content = <Doughnut 
-                    data={_data} 
-                    width={100}
-                    height={50}/>;
-                break;
-
-            case 2:
-                let _choices=[];
-                
-                for(let i=0;i<this.props.data.result.participant.length;i++){
-                    let str = "";
-                    for(let j=0;j<this.props.data.result.participant[i].length;j++){
-                        str += this.props.data.result.participant[i][j]
-                        if(j != this.props.data.result.participant[i].length-1)
-                            str += ", ";
+                    for(let j=0;j<this.props.data.questions[i].options.length;j++){
+                        _count[j] = this.props.data.questions[i].options[j].option_user_id.length;
+                        _label[j] = this.props.data.questions[i].options[j].option_name;
                     }
-                    _choices.push(
-                        <tr key={(i+1)}>
-                            <td key="1">{this.props.data.result.label[i]}</td>
-                            <td key="2">{this.props.data.result.data[i]} 명</td>
-                            <td key="3">{str}</td>
-                        </tr>
+
+                    let _data = {
+                        datasets:[{
+                            backgroundColor: BackgroundColorPreset,
+                            data: _count
+                        }],
+                        labels: _label
+                    }
+
+                    _content.push(
+                        <div key={i}>
+                            <p key={i}>{this.props.data.questions[i].question_title}</p>
+                            <Doughnut 
+                            data={_data} 
+                            width={100}
+                            height={50}/>
+                        </div>
                     );
                 }
 
-                _content = <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>Choice</th>
-                                    <th>Number</th>
-                                    <th>Person</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {_choices}
-                            </tbody>
-                            </Table>;
+                break;
+
+            case 2:
+                for(let j=0;j<this.props.data.questions.length;j++){
+                    let _choices=[];
+                    for(let i=0;i<this.props.data.questions[j].options.length;i++){
+                        let str = "";
+                        for(let k=0;k<this.props.data.questions[j].options[i].option_user_nickname.length;k++){
+                            str += this.props.data.questions[j].options[i].option_user_nickname[k];
+                            if(k !== this.props.data.questions[j].options[i].option_user_nickname.length-1)
+                                str += ", ";
+                        }
+                        _choices.push(
+                            <tr key={(i+1)}>
+                                <td key="1">{this.props.data.questions[j].options[i].option_name}</td>
+                                <td key="2">{this.props.data.questions[j].options[i].count} 명</td>
+                                <td key="3">{str}</td>
+                            </tr>
+                        );
+                    }
+
+                    _content.push(<p>{this.props.data.questions[j].question_title}</p>)
+                    _content.push(<Table striped bordered hover key={j}>
+                                <thead>
+                                    <tr>
+                                        <th>Question</th>
+                                        <th>Number</th>
+                                        <th>Person</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {_choices}
+                                </tbody>
+                                </Table>);
+                }
                 break;
             case 3:
                 _content = <><br/><br/>
@@ -127,12 +141,13 @@ class VoteResultSpeacker extends React.Component {
                 <p>삭제시 복구가 불가능합니다.</p>
                 <hr />
                 <div className="d-flex justify-content-end">
-                  <Button onClick={this.onVoteDelete} variant="outline-danger">
+                  <Button onClick={this.onSimpollDelete} variant="outline-danger">
                     Delete
                   </Button>
                 </div>
                 </Alert>
                 </>
+                break;
         }
 
         let isDisableLeftButton = this.disableLeftButton();
@@ -150,20 +165,17 @@ class VoteResultSpeacker extends React.Component {
                             <Col xs={9} className="p-0">
                                 <Row>
                                     <Col xs={12}>
-                                        <b>제목</b>: {this.props.data.vote_title} <b>심폴ID</b>: {this.props.data.group_id} <b>URL</b>: {this.props.data.url_name}
+                                        <b>제목</b>: {this.props.data.title} <b>심폴ID</b>: {this.props.data.sid} <b>URL</b>: {this.props.data.url_name}
                                     </Col>
                                     <Col xs={12}>
-                                        <b>마감기한</b>: {this.props.data.deadline} <b>참여인원</b>: {this.props.data.result.part_num} 명
-                                    </Col>
-                                    <Col xs={12}>
-                                        <VoteResultProgress data={this.props.data.result}/>
+                                        <b>마감기한</b>: {this.props.data.deadline}
                                     </Col>
                                 </Row>
                             </Col>
                             <Col xs={1}>
                                 <Button 
                                     variant="light" className="p-0 float-right"
-                                    onClick={this.onVoteRefresh}
+                                    onClick={this.onSimpollRefresh}
                                 >
                                     <span className="icon-refresh">
                                         <i className="fas fa-redo-alt"></i>
@@ -174,7 +186,7 @@ class VoteResultSpeacker extends React.Component {
                                 <Button 
                                     variant="light" className="p-0 float-right"
                                     onClick={() => this.setOpen(!this.state.open)}
-                                    aria-controls={"collapse-vote-"+this.props.idx}
+                                    aria-controls={"collapse-simpoll-"+this.props.idx}
                                     aria-expanded={this.state.open}
                                 >
                                     {_arrow}
@@ -185,7 +197,7 @@ class VoteResultSpeacker extends React.Component {
                 </Card.Header>
                 <Card.Body>
                     <Collapse in={this.state.open}>
-                        <div id={"collapse-vote-"+this.props.idx}>
+                        <div id={"collapse-simpoll-"+this.props.idx}>
                             <ButtonGroup className="float-right">
                                 <Button 
                                     variant="light" 
@@ -213,4 +225,4 @@ class VoteResultSpeacker extends React.Component {
     }   
 }
 
-export default VoteResultSpeacker;
+export default SimpollResultSpeaker;

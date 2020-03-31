@@ -1,6 +1,7 @@
 {
     "result":"success",
     "data":{
+        "sid": "1",
         "email": "email@example.com",
         "name": "user",
         "nickname": "nickname"

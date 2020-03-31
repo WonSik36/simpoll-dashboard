@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
-import VoteList from './VoteList';
+import SimpollList from './SimpollList';
 import RoomList from './RoomList';
 import './style/Main.css';
 
@@ -18,12 +18,11 @@ class MainAudience extends React.Component {
                     </Col>
                     <Col sm={8}>
                         <h3>Simpoll</h3>
-                        <VoteList
-                            data={this.props['vote-list-data']}
-                            onVoteSubmit={this.props['onVoteSubmit']}
+                        <SimpollList
+                            data={this.props['simpoll-list-data']}
+                            onSimpollSubmit={this.props['onSimpollSubmit']}
                             isAudience={true}
-                            onUpdateChoice={this.props.onUpdateChoice}
-                            onVoteRefresh={this.props.onVoteRefresh}
+                            onSimpollRefresh={this.props.onSimpollRefresh}
                         />
                     </Col>
                 </Row>

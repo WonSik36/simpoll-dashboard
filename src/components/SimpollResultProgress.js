@@ -1,7 +1,7 @@
 import React from 'react';
 import {ProgressBar} from 'react-bootstrap';
 
-class VoteResultProgress extends React.Component {
+class SimpollResultProgress extends React.Component {
     constructor(props){
         super(props);
         this.state= {
@@ -37,4 +37,4 @@ class VoteResultProgress extends React.Component {
     }   
 }
 
-export default VoteResultProgress;
+export default SimpollResultProgress;
