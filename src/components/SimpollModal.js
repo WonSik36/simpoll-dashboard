@@ -39,12 +39,21 @@ class SimpolllModal extends React.Component {
             anonymousType: '0',
             anonymousReadOnly: false,
             partAuthType: '0',
-            options: ["",""]
+            questions:[
+                {
+                    title:"",
+                    choice_no: 2,
+                    question_type: "0",
+                    options: ["",""]
+                }
+            ]
         });
     }
 
     handleShow() {
-        this.setState({show:true});
+        this.setState({
+            show: true
+        });
     }
 
     onChangeAnonymousType(e){

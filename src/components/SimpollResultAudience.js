@@ -67,7 +67,7 @@ class SimpollResultAudience extends React.Component {
                     let _label = [];
 
                     for(let j=0;j<this.props.data.questions[i].options.length;j++){
-                        _count[j] = this.props.data.questions[i].options[j].option_user_id.length;
+                        _count[j] = this.props.data.questions[i].options[j].count;
                         _label[j] = this.props.data.questions[i].options[j].option_name;
                     }
 

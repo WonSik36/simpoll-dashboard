@@ -123,6 +123,10 @@ class App extends React.Component {
                         isLoading: false,
                         items: data
                     },
+                    simpollList:{
+                        isLoading: false,
+                        items:[]
+                    }
                 });
 
                 if(data.length > 0){
