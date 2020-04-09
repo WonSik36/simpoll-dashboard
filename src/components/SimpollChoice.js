@@ -5,10 +5,21 @@ import './style/Simpoll.css';
 class SimpollChoice extends React.Component {
     constructor(props){
         super(props);
+
+        let _choices = [];
+        for(let j=0;j<this.props.data.questions.length;j++){
+            let _choice = [];
+            for(let i=0;i<this.props.data.questions[j].options.length;i++){
+                _choice.push(false);
+            }
+            _choices.push(_choice);
+        }
+
         this.state = {
             open: false,
-            choice: 1
+            choice: _choices
         };
+
         this.setOpen = this.setOpen.bind(this);
         this.onChoiceChange = this.onChoiceChange.bind(this);
         this.onSimpollSubmit = this.onSimpollSubmit.bind(this);
@@ -21,8 +32,25 @@ class SimpollChoice extends React.Component {
     }
 
     onChoiceChange(e){
+        let _choice = this.state.choice.slice();
+        let qidx = e.currentTarget.dataset.qidx;
+        let oidx = e.currentTarget.dataset.oidx;
+        if(this.props.data.questions[qidx].question_type === "0"){
+            for(let i=0;i<_choice[qidx].length;i++){
+                if(i == oidx)
+                    _choice[qidx][i] = true;
+                else
+                    _choice[qidx][i] = false;
+            }
+        }else{
+            for(let i=0;i<_choice[qidx].length;i++){
+                if(i == oidx)
+                    _choice[qidx][i] = !_choice[qidx][i];
+            }
+        }
+
         this.setState({
-            choice: e.currentTarget.value
+            choice: _choice
         });
     }
 
@@ -30,10 +58,10 @@ class SimpollChoice extends React.Component {
         e.preventDefault();
         
         let options = [];
-        for(let i=0;i<this.props.data.questions.length;i++){
-            for(let j=0;j<this.props.data.questions[i].options.length;j++){
-                if(e.currentTarget['option-'+this.props.data.questions[i].options[j].option_id].checked === true)
-                    options.push(e.currentTarget['option-'+this.props.data.questions[i].options[j].option_id].value);
+        for(let i=0;i<this.state.choice.length;i++){
+            for(let j=0;j<this.state.choice[i].length;j++){
+                if(this.state.choice[i][j])
+                    options.push(this.props.data.questions[i].options[j].option_id);
             }
         }
 
@@ -46,6 +74,7 @@ class SimpollChoice extends React.Component {
     render() {
         let _content = [];
         let _key = 1;
+
         for(let j=0;j<this.props.data.questions.length;j++){
             let _formGroup = [];
 
@@ -57,8 +86,11 @@ class SimpollChoice extends React.Component {
                             key={_key++}
                             label={this.props.data.questions[j].options[i].option_name} 
                             type='radio' 
-                            id={'simpoll-'+this.props.data.questions[j].sid+'-radio-'+(i+1)} 
-                            name={"option-"+this.props.data.questions[j].options[i].option_id}
+                            data-qidx={j}
+                            data-oidx={i}
+                            chekced={this.state.choice[j][i].toString()}
+                            onChange={this.onChoiceChange}
+                            name={"option-"+this.props.data.questions[j].sid}
                             value={this.props.data.questions[j].options[i].option_id}/>
                     )
                 }
@@ -70,8 +102,11 @@ class SimpollChoice extends React.Component {
                             key={_key++}
                             label={this.props.data.questions[j].options[i].option_name} 
                             type='checkbox' 
-                            id={'simpoll-'+this.props.data.questions[j].sid+'-checkbox-'+(i+1)} 
-                            name={"option-"+this.props.data.questions[j].options[i].option_id}
+                            data-qidx={j}
+                            data-oidx={i}
+                            chekced={this.state.choice[j][i].toString()}
+                            onChange={this.onChoiceChange}
+                            name={"option-"+this.props.data.questions[j].sid}
                             value={this.props.data.questions[j].options[i].option_id}/>
                     )
                 }

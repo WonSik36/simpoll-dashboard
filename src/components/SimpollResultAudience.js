@@ -107,7 +107,8 @@ class SimpollResultAudience extends React.Component {
                                     label={this.props.data.questions[j].options[i].option_name} 
                                     type='radio' 
                                     id={'simpoll-'+this.props.data.questions[j].sid+'-radio-'+(i+1)} 
-                                    name="contents_number" value={(i+1)}
+                                    name={"contents_number"+this.props.data.questions[j].sid} 
+                                    value={(i+1)}
                                     defaultChecked={_checked}
                                     disabled={true}/>
                             )
@@ -122,7 +123,8 @@ class SimpollResultAudience extends React.Component {
                                     label={this.props.data.questions[j].options[i].option_name} 
                                     type='checkbox' 
                                     id={'simpoll-'+this.props.data.questions[j].sid+'-checkbox-'+(i+1)} 
-                                    name="contents_number" value={(i+1)}
+                                    name={"contents_number"+this.props.data.questions[j].sid}
+                                    value={(i+1)}
                                     defaultChecked={_checked}
                                     disabled={true}/>
                             )
