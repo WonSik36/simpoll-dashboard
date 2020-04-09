@@ -92,8 +92,8 @@ class App extends React.Component {
     }
 
     getUserInfo(){
-        let url = "/index.php/api/user";
-        // let url = "/user.json";
+        // let url = "/index.php/api/user";
+        let url = "/user.json";
 
         this.fetchTemplate(url,null,null,
             function(data){
@@ -107,13 +107,13 @@ class App extends React.Component {
     }
 
     getRoomList(isAudience){
-        let url;
-        if(isAudience)
-            url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=audience";
-        else
-            url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=speacker";
+        // let url;
+        // if(isAudience)
+        //     url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=audience";
+        // else
+        //     url = "/index.php/api/user/"+this.state.user.sid+"/room?persontype=speacker";
 
-        // let url = "/roomList.json"
+        let url = "/roomList.json"
 
         let _roomList = Object.assign({}, this.state.roomList, {isLoading:true});
         this.fetchTemplate(url,null,{roomList:_roomList},
@@ -193,8 +193,8 @@ class App extends React.Component {
             }
         };
 
-        let url = "/index.php/api/room/"+sid+"/simpoll";
-        // let url = "/simpollList.json"
+        // let url = "/index.php/api/room/"+sid+"/simpoll";
+        let url = "/simpollList.json"
 
         this.fetchTemplate(url,null,loadingState,
             function(data){
@@ -225,8 +225,8 @@ class App extends React.Component {
         let simpollId = this.state.simpollList.items[idx].sid;
 
         // set url
-        let url = "/index.php/api/simpoll/"+simpollId;
-        // let url = "/simpoll.json";
+        // let url = "/index.php/api/simpoll/"+simpollId;
+        let url = "/simpoll.json";
 
         // get simpoll result
         this.fetchTemplate(url,null,null,
@@ -423,6 +423,7 @@ class App extends React.Component {
             is_anonymous: simpoll[0].is_anonymous,
             part_auth: simpoll[0].part_auth,
             create_date: simpoll[0].create_date,
+            isDeadlinePass: simpoll[0].isDeadlinePass,
             questions:[]
         }
 
